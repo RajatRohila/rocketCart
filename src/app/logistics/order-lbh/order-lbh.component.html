@@ -1,0 +1,171 @@
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <!--Loader start hear-->
+      <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" type = "ball-scale-multiple" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Upload Bulk LBH</div>
+
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <div class="padd">
+              <div class="form quick-post">
+                <!-- Edit profile form (not working)-->
+                <form class="form-horizontal" [formGroup]="form" (ngSubmit)="onSubmit()" >
+                  <!-- Title -->
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-lg-2 col-lg-offset-1"> <span style="color:green;">Total Records = {{responseBody.totalRecord}}</span> </div>
+                      <div class="col-lg-2"> <span style="color:green;">Success Records = {{responseBody.successRecord}}</span></div>
+                      <div class="col-lg-3"> <span style="color:red;">Error Records = {{responseBody.errorRecord}}</span></div>
+                      <div class="col-lg-4">
+                        <div class="row">
+                          <div class="col-lg-6"><button [class.col-lg-6]="" type="button" class="btn btn-primary" (click)="downloadSuccessFile()">Download Success File</button></div>
+                          <div class="col-lg-6"><button type="button" class="btn btn-danger" (click)="downloadErrorFile()">Download Error File</button></div>
+                        </div>
+                      </div>
+                    </div><br>
+                    <!--Progress Bar start hear-->
+                    <div class="row" *ngIf="isUploadStart">
+                      <div class="col-lg-10 col-lg-offset-1">
+                        <div class="progress" style="height: 20px;">
+                          <div class="progress-bar progress-bar-striped progress-bar-animated" style="{{'width:' + uploadPresentage +'%'}}; height: 20px;"> {{uploadPresentage+'%'}}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--Progress Bar end hear-->
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" for="title">Weight Type<span style="color:red">*</span></label>
+                        <select class="form-control"formControlName="bulkType">
+                          <option value="">- Choose weight Type -</option>
+                          <option value="SELF">SELF</option>
+                          <option value="COURIER">COURIER</option>
+                        </select>
+                        <!--<label class="control-label " for="title">Weight Type<span style="color:red">*</span></label>
+                          <select class="form-control"formControlName="bulkType">
+                            <option value="">- Choose weigth Type -</option>
+                            <option [ngValue]="uploadType" *ngFor="let uploadType of weighttype" >{{uploadType}}</option>
+                          </select>-->
+                      </div>
+                      <div class="col-lg-3">
+                        <label class="control-label" for="title">Select Upload File<span style="color:red">*</span></label>
+                        <input #fileInput type="file" id="file" class="form-control"  accept=".xlsx, .xls" name="file" (click)="fileInput.value = null" (change)="onFileChange($event)">
+                      </div>
+                      <div class="col-lg-4"><br>
+                        <div class="row">
+                          <div class="col-lg-6"><button type="submit" class="btn btn-primary" [disabled]="isUploadButtonDisabled">Upload</button></div>
+                          <div class="col-lg-6"><button type="button" class="btn btn-primary" (click)="downloadTemplate()">Download Template</button></div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                  </div>
+                  <!--<div class="form-group">
+                    &lt;!&ndash; Buttons &ndash;&gt;
+                    <div class="col-lg-offset-2 col-lg-9">
+                      <button type="submit" class="btn btn-primary" >Upload</button>
+                    </div>
+                  </div>-->
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Upload Single LBH </div>
+
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <div class="padd">
+              <div class="form quick-post">
+                <!-- Edit profile form (not working)-->
+                <form class="form-horizontal" [formGroup]="LBHUploadForm" (ngSubmit)="onSubmitLbh()" >
+                  <!-- Title -->
+                  <div class="form-group">
+                    <div class="row">
+                     <!-- <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" for="title">Weight Type<span style="color:red">*</span></label>
+                        <select class="form-control"formControlName="bulkType">
+                          <option value="">- Choose weight Type -</option>
+                          <option value="SELF">SELF</option>
+                          <option value="COURIER">COURIER</option>
+                        </select>
+                        &lt;!&ndash;<label class="control-label " for="title">Weight Type<span style="color:red">*</span></label>
+                          <select class="form-control"formControlName="bulkType">
+                            <option value="">- Choose weigth Type -</option>
+                            <option [ngValue]="uploadType" *ngFor="let uploadType of weighttype" >{{uploadType}}</option>
+                          </select>&ndash;&gt;
+                      </div>-->
+
+                      <div class="col-lg-2 ">
+                        <label class="control-label" for="title">Weight Type<span style="color:red">*</span></label>
+                        <select class="form-control"formControlName="bulkType">
+                          <option value="">- Choose weight Type -</option>
+                          <option value="SELF">SELF</option>
+                          <option value="COURIER">COURIER</option>
+                        </select>
+                      </div>
+                      <div class="col-lg-2 ">
+                        <label class="control-label" >AWB Number<span style="color:red">*</span></label>
+                        <div *ngIf="LBHUploadForm.controls['awbNumber'].touched && LBHUploadForm.controls['awbNumber'].invalid" class="alert-danger">
+                          <div *ngIf="LBHUploadForm.controls['awbNumber'].errors && LBHUploadForm.controls['awbNumber'].errors.required">awbNumber is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="awbNumber">
+                      </div>
+                      <div class="col-lg-2 ">
+                        <label class="control-label" >Weight(KG)<span style="color:red">*</span></label>
+                        <div *ngIf="LBHUploadForm.controls['clientWeight'].touched && LBHUploadForm.controls['clientWeight'].invalid" class="alert-danger">
+                          <div *ngIf="LBHUploadForm.controls['clientWeight'].errors && LBHUploadForm.controls['clientWeight'].errors.required">clientWeight is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="clientWeight">
+                      </div>
+                      <div class="col-lg-2 ">
+                        <label class="control-label" >Length(CM)<span style="color:red">*</span></label>
+                        <div *ngIf="LBHUploadForm.controls['clientLength'].touched && LBHUploadForm.controls['clientLength'].invalid" class="alert-danger">
+                          <div *ngIf="LBHUploadForm.controls['clientLength'].errors && LBHUploadForm.controls['clientLength'].errors.required">clientLength is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="clientLength">
+                      </div>
+                      <div class="col-lg-2 ">
+                        <label class="control-label" >Width(CM)<span style="color:red">*</span></label>
+                        <div *ngIf="LBHUploadForm.controls['clientWidth'].touched && LBHUploadForm.controls['clientWidth'].invalid" class="alert-danger">
+                          <div *ngIf="LBHUploadForm.controls['clientWidth'].errors && LBHUploadForm.controls['clientWidth'].errors.required">clientWidth is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="clientWidth">
+                      </div>
+                      <div class="col-lg-2 ">
+                        <label class="control-label" >Height(CM)<span style="color:red">*</span></label>
+                        <div *ngIf="LBHUploadForm.controls['clientHeight'].touched && LBHUploadForm.controls['clientHeight'].invalid" class="alert-danger">
+                          <div *ngIf="LBHUploadForm.controls['clientHeight'].errors && LBHUploadForm.controls['clientHeight'].errors.required">clientHeight is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="clientHeight">
+                      </div>
+                    </div>
+                    <div class="col-lg-3 col-lg-offset-11"><br>
+                      <div class="row">
+                        <div class="col-lg-6"><button type="submit" class="btn btn-primary" >SUBMIT</button></div>
+                      </div>
+                    </div>
+
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+      </div>
+    </div>
+
+
+
+  </section>
+
+</section>

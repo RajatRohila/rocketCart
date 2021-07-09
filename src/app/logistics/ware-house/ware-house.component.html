@@ -1,0 +1,399 @@
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <!-- application loader-->
+      <!--<ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" type = "ball-scale-multiple" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+-->      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Client Warehouse&nbsp;&nbsp;&nbsp;&nbsp;
+              <!--<button *ngIf="isDisplay" class="btn btn-default"> <a href="#"  (click)="addNew()">Add  Record</a></button>&nbsp;-->
+              <BUTTON *ngIf="isDisplay" class="btn btn-primary" (click)="addNew()">Add Record</BUTTON>&nbsp;&nbsp;&nbsp;&nbsp;
+              <BUTTON *ngIf="isDisplay" class="btn btn-primary" (click)="onDownloadClientWarehouseReport()">Download Report</BUTTON>&nbsp;&nbsp;&nbsp;&nbsp;
+              <BUTTON *ngIf="isDisplay" class="btn btn-primary" (click)="excalUpload()">Bulk Upload</BUTTON>&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <!--Bulk upload form start hear-->
+            <div class="padd" *ngIf="isUpload">
+              <div class="form quick-post">
+                <!-- Edit profile form (not working)-->
+                <form class="form-horizontal" [formGroup]="form" (ngSubmit)="onBulkUpload()">
+                  <!-- Title -->
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-lg-2 col-lg-offset-1"> <span style="color:green;">Total Records = {{responseBody.totalRecord}}</span> </div>
+                      <div class="col-lg-2"> <span style="color:green;">Success Records = {{responseBody.successRecord}}</span></div>
+                      <div class="col-lg-3"> <span style="color:red;">Error Records = {{responseBody.errorRecord}}</span>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="row">
+                          <div class="col-lg-6">
+                            <button [class.col-lg-6]="" type="button" class="btn btn-primary" (click)="downloadSuccessFile()">Download Success File</button>
+                          </div>
+                          <div class="col-lg-6">
+                            <button type="button" class="btn btn-danger" (click)="downloadErrorFile()">Download Error File</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div><br>
+                    <!--Progress Bar start hear-->
+                    <div class="row" *ngIf="isUploadStart">
+                      <div class="col-lg-10 col-lg-offset-1">
+                        <div class="progress" style="height: 20px;">
+                          <div class="progress-bar progress-bar-striped progress-bar-animated" style="{{'width:' + uploadPresentage +'%'}}; height: 20px;"> {{uploadPresentage+'%'}}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--Progress Bar end hear-->
+                    <div class="row">
+                      <div class="col-lg-2 col-lg-offset-1">
+                        <div class="row">
+                          <div class="col-lg-3">
+                            <div><label class="control-label" for="title">isUpdate</label></div>
+                          </div>
+                          <div class="col-lg-3 col-lg-offset-1">
+                            <input class="form-check-input" type="checkbox" value="false" formControlName="isUpdate"
+                                   (change)="isCheck('UPDATE')">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-lg-4 ">
+                        <label class="control-label" for="title">Select Upload File<span
+                          style="color:red">*</span></label>
+                        <input type="file" class="form-control" name="file" (change)="onFileChange($event)">
+                      </div>
+                      <div class="col-lg-4"><br>
+                        <div class="row">
+                          <div class="col-lg-6">
+                            <button type="submit" class="btn btn-primary" [disabled]="isUploadButtonDisabled">Upload</button>
+                          </div>
+                          <div class="col-lg-6">
+                            <button type="button" class="btn btn-primary" (click)="downloadTemplate()">Download Template
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                    <div class="form-group">
+                      <div class="col-lg-offset-4 col-lg-7">
+                        <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                      </div>
+                    </div>
+
+                  </div>
+                </form>
+
+              </div>
+
+            </div>
+
+            <!--Add form start hear-->
+            <div class="padd" *ngIf="isAdd">
+              <div class="form quick-post">
+                <form class="form-horizontal" [formGroup]="clientWarehouseForm" (ngSubmit)="onSubmit()" >
+                  <div class="form-group">
+
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" >Warehouse Name<span style="color:red">*</span></label>
+                        <div *ngIf="clientWarehouseForm.controls['warehouseName'].touched && clientWarehouseForm.controls['warehouseName'].invalid" class="alert-danger">
+                          <div *ngIf="clientWarehouseForm.controls['warehouseName'].errors && clientWarehouseForm.controls['warehouseName'].errors.required">Warehouse Name is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="warehouseName">
+                      </div>
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" >Warehouse Code<span style="color:red">*</span></label>
+                        <div *ngIf="clientWarehouseForm.controls['warehouseCode'].touched && clientWarehouseForm.controls['warehouseCode'].invalid" class="alert-danger">
+                          <div *ngIf="clientWarehouseForm.controls['warehouseCode'].errors && clientWarehouseForm.controls['warehouseCode'].errors.required">Warehouse Code is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="warehouseCode">
+                      </div>
+                    </div>
+                      <div class="row">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label " for="title">Client Code<span style="color:red">*</span></label>
+                          <select class="form-control" formControlName="clientCode">
+                            <option value="">- Choose service type -</option>
+                            <option *ngFor="let item of clientCodeList; let i = index" [value]="item.clientCode" >
+                              {{item.clientName}}
+                            </option>
+                          </select>
+                        </div>
+
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" >Pincode<span style="color:red">*</span></label>
+                          <div *ngIf="clientWarehouseForm.controls['pinCode'].touched && clientWarehouseForm.controls['pinCode'].invalid" class="alert-danger">
+                            <div *ngIf="clientWarehouseForm.controls['pinCode'].errors && clientWarehouseForm.controls['pinCode'].errors.required">Pincode is required.</div>
+                            <div *ngIf="clientWarehouseForm.controls['pinCode'].errors.pattern || clientWarehouseForm.controls['pinCode'].errors.maxlength || clientWarehouseForm.controls['pincode'].errors.minlength">Pincode must be at least 6 numbers</div>
+                          </div>
+                          <input type="text" class="form-control"  formControlName="pinCode" (keypress)="keyPress($event)" (keyup)="getCityStateCountryByPincode(false)">
+                        </div>
+
+                      </div>
+
+
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" >City<span style="color:red">*</span></label>
+                        <div *ngIf="clientWarehouseForm.controls['city'].touched && clientWarehouseForm.controls['city'].invalid" class="alert-danger">
+                          <div *ngIf="clientWarehouseForm.controls['city'].errors && clientWarehouseForm.controls['city'].errors.required">City Name is required.</div></div>
+                        <input type="text" readonly class="form-control"  formControlName="city" [(ngModel)]="pincodeDetails.city" value="{{pincodeDetails.city}}">
+                      </div>
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" >State<span style="color:red">*</span></label>
+                        <div *ngIf="clientWarehouseForm.controls['state'].touched && clientWarehouseForm.controls['state'].invalid" class="alert-danger">
+                          <div *ngIf="clientWarehouseForm.controls['state'].errors && clientWarehouseForm.controls['state'].errors.required">State is required.</div></div>
+                        <input type="text" readonly class="form-control"  formControlName="state" [(ngModel)]="pincodeDetails.state" value="{{pincodeDetails.state}}">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" >Country<span style="color:red">*</span></label>
+                        <div *ngIf="clientWarehouseForm.controls['country'].touched && clientWarehouseForm.controls['country'].invalid" class="alert-danger">
+                          <div *ngIf="clientWarehouseForm.controls['country'].errors && clientWarehouseForm.controls['country'].errors.required">Country is required.</div></div>
+                        <input type="text" readonly class="form-control"  formControlName="country" [(ngModel)]="pincodeDetails.country" value="{{pincodeDetails.country}}">
+                      </div>
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" >Address<span style="color:red">*</span></label>
+                        <div *ngIf="clientWarehouseForm.controls['address'].touched && clientWarehouseForm.controls['address'].invalid" class="alert-danger">
+                          <div *ngIf="clientWarehouseForm.controls['address'].errors && clientWarehouseForm.controls['address'].errors.required">address is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="address">
+                      </div>
+                    </div>
+
+
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" >Contact Person Name<span style="color:red">*</span></label>
+                        <div *ngIf="clientWarehouseForm.controls['contactPersonName'].touched && clientWarehouseForm.controls['contactPersonName'].invalid" class="alert-danger">
+                          <div *ngIf="clientWarehouseForm.controls['contactPersonName'].errors && clientWarehouseForm.controls['contactPersonName'].errors.required">Contact Person Name is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="contactPersonName">
+                      </div>
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" >Mobile Number<span style="color:red">*</span></label>
+                        <div *ngIf="clientWarehouseForm.controls['contactNumber'].touched && clientWarehouseForm.controls['contactNumber'].invalid" class="alert-danger">
+                          <div *ngIf="clientWarehouseForm.controls['contactNumber'].errors && clientWarehouseForm.controls['contactNumber'].errors.required">Contact Number is required.</div>
+                          <div *ngIf="clientWarehouseForm.controls['contactNumber'].errors.pattern || clientWarehouseForm.controls['contactNumber'].errors.maxlength || clientWarehouseForm.controls['contactNumber'].errors.minlength">Contact Number must be at least 10 numbers</div>
+                        </div>
+                        <input type="text" class="form-control"  formControlName="contactNumber"(keypress)="keyPress($event)">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" >Alternate Mobile Number</label>
+                        <div *ngIf="clientWarehouseForm.controls['alternateContact'].touched && clientWarehouseForm.controls['alternateContact'].invalid" class="alert-danger">
+                          <!--<div *ngIf="clientWarehouseForm.controls['alternateContact'].errors && clientWarehouseForm.controls['alternateContact'].errors.required">Contact Number is required.</div>-->
+                          <div *ngIf="clientWarehouseForm.controls['alternateContact'].errors.pattern || clientWarehouseForm.controls['alternateContact'].errors.maxlength || clientWarehouseForm.controls['alternateContact'].errors.minlength">Contact Number must be at least 10 numbers</div>
+                        </div>
+                        <input type="text" class="form-control"  formControlName="alternateContact"(keypress)="keyPress($event)">
+                      </div>
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" >Email</label>
+                        <div *ngIf="clientWarehouseForm.controls['email'].touched && clientWarehouseForm.controls['email'].invalid" class="alert-danger">
+                          <div *ngIf="clientWarehouseForm.controls['email'].errors?.pattern" class="text-danger">Please provide a valid email address</div>
+                        </div>
+                        <input type="text" class="form-control"  formControlName="email">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="col-lg-offset-4 col-lg-7">
+                      <button type="submit" class="btn btn-primary"[disabled]="!clientWarehouseForm.valid">Save</button>&nbsp;&nbsp;&nbsp;
+                      <button type="reset" class="btn btn-default">Reset</button>&nbsp;&nbsp;&nbsp;
+                      <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!--Update form start hear-->
+            <div class="padd" *ngIf="isUpdate">
+              <div class="form quick-post">
+                <form class="form-horizontal" [formGroup]="updateClientWarehouseForm" (ngSubmit)="onUpdateSubmit()">
+                  <div *ngIf="singleRecord.id">
+                    <div class="form-group">
+                      <!--Object id is hidden-->
+                      <div class="row">
+                        <input readonly type="hidden"  [(ngModel)]="singleRecord.id" formControlName="id" value={{singleRecord.id}}>
+                      </div><br>
+
+                      <div class="row">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" >Warehouse Name<span style="color:red">*</span></label>
+                          <div *ngIf="updateClientWarehouseForm.controls['warehouseName'].touched && updateClientWarehouseForm.controls['warehouseName'].invalid" class="alert-danger">
+                            <div *ngIf="updateClientWarehouseForm.controls['warehouseName'].errors && updateClientWarehouseForm.controls['warehouseName'].errors.required">Warehouse Name is required.</div></div>
+                          <input type="text" class="form-control"  formControlName="warehouseName" [(ngModel)]="singleRecord.warehouseName" value={{singleRecord.warehouseName}}>
+                        </div>
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" >Warehouse Code<span style="color:red">*</span></label>
+                          <div *ngIf="updateClientWarehouseForm.controls['warehouseCode'].touched && updateClientWarehouseForm.controls['warehouseCode'].invalid" class="alert-danger">
+                            <div *ngIf="updateClientWarehouseForm.controls['warehouseCode'].errors && updateClientWarehouseForm.controls['warehouseCode'].errors.required">Warehouse Code is required.</div></div>
+                          <input type="text" class="form-control"  formControlName="warehouseCode" [(ngModel)]="singleRecord.warehouseCode" value={{singleRecord.warehouseCode}}>
+                        </div>
+
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label " for="title">Client Code<span style="color:red">*</span></label>
+                          <select class="form-control" formControlName="clientCode" [(ngModel)]="singleRecord.clientCode" value={{singleRecord.warehouseCode}}>
+                            <option value="">- Choose service type -</option>
+                            <option *ngFor="let item of clientCodeList; let i = index" [value]="item.clientCode" >
+                              {{item.clientName}}
+                            </option>
+                          </select>
+                        </div>
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label">Pincode<span style="color:red">*</span></label>
+                          <div *ngIf="updateClientWarehouseForm.controls['pinCode'].touched && updateClientWarehouseForm.controls['pinCode'].invalid" class="alert-danger">
+                            <div *ngIf="updateClientWarehouseForm.controls['pinCode'].errors && updateClientWarehouseForm.controls['pinCode'].errors.required">Pincode is required.
+                            </div>
+                            <div *ngIf="updateClientWarehouseForm.controls['pinCode'].errors.pattern || updateClientWarehouseForm.controls['pinCode'].errors.maxlength || updateClientWarehouseForm.controls['pinCode'].errors.minlength">Pincode must be at least 6 numbers
+                            </div>
+                          </div>
+                          <input type="text" class="form-control" formControlName="pinCode" (keypress)="keyPress($event)" (keyup)="getCityStateCountryByPincode(true)" [(ngModel)]="singleRecord.pinCode" value={{singleRecord.pinCode}}>
+                        </div>
+                      </div>
+
+
+
+                      <div class="row">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" >City<span style="color:red">*</span></label>
+                          <div *ngIf="updateClientWarehouseForm.controls['city'].touched && updateClientWarehouseForm.controls['city'].invalid" class="alert-danger">
+                            <div *ngIf="updateClientWarehouseForm.controls['city'].errors && updateClientWarehouseForm.controls['city'].errors.required">City Name is required.</div></div>
+                          <input type="text" readonly class="form-control"  formControlName="city" [(ngModel)]="pincodeDetails.city" value="{{pincodeDetails.city}}">
+                        </div>
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" >State<span style="color:red">*</span></label>
+                          <div *ngIf="updateClientWarehouseForm.controls['state'].touched && updateClientWarehouseForm.controls['state'].invalid" class="alert-danger">
+                            <div *ngIf="updateClientWarehouseForm.controls['state'].errors && updateClientWarehouseForm.controls['state'].errors.required">State is required.</div></div>
+                          <input type="text" readonly class="form-control"  formControlName="state" [(ngModel)]="pincodeDetails.state" value="{{pincodeDetails.state}}">
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" >Country<span style="color:red">*</span></label>
+                          <div *ngIf="updateClientWarehouseForm.controls['country'].touched && updateClientWarehouseForm.controls['country'].invalid" class="alert-danger">
+                            <div *ngIf="updateClientWarehouseForm.controls['country'].errors && updateClientWarehouseForm.controls['country'].errors.required">Country is required.</div></div>
+                          <input type="text" readonly class="form-control"  formControlName="country" [(ngModel)]="pincodeDetails.country" value="{{pincodeDetails.country}}">
+                        </div>
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" >Address<span style="color:red">*</span></label>
+                          <div *ngIf="updateClientWarehouseForm.controls['address'].touched && updateClientWarehouseForm.controls['address'].invalid" class="alert-danger">
+                            <div *ngIf="updateClientWarehouseForm.controls['address'].errors && updateClientWarehouseForm.controls['address'].errors.required">address is required.</div></div>
+                          <input type="text" class="form-control"  formControlName="address" [(ngModel)]="singleRecord.address" value={{singleRecord.address}}>
+                        </div>
+                      </div>
+
+
+
+                      <div class="row">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" >Contact Person Name<span style="color:red">*</span></label>
+                          <div *ngIf="updateClientWarehouseForm.controls['contactPersonName'].touched && updateClientWarehouseForm.controls['contactPersonName'].invalid" class="alert-danger">
+                            <div *ngIf="updateClientWarehouseForm.controls['contactPersonName'].errors && updateClientWarehouseForm.controls['contactPersonName'].errors.required">Contact Person Name is required.</div></div>
+                          <input type="text" class="form-control"  formControlName="contactPersonName" [(ngModel)]="singleRecord.contactPersonName" value={{singleRecord.contactPersonName}}>
+                        </div>
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" >Contact Number<span style="color:red">*</span></label>
+                          <div *ngIf="updateClientWarehouseForm.controls['contactNumber'].touched && updateClientWarehouseForm.controls['contactNumber'].invalid" class="alert-danger">
+                            <div *ngIf="updateClientWarehouseForm.controls['contactNumber'].errors && updateClientWarehouseForm.controls['contactNumber'].errors.required">Contact Number is required.</div>
+                            <div *ngIf="updateClientWarehouseForm.controls['contactNumber'].errors.pattern || updateClientWarehouseForm.controls['contactNumber'].errors.maxlength || updateClientWarehouseForm.controls['contactNumber'].errors.minlength">Contact Number must be at least 10 numbers</div>
+                          </div>
+                          <input type="text" class="form-control"  formControlName="contactNumber" [(ngModel)]="singleRecord.contactNumber" value={{singleRecord.contactNumber}} (keypress)="keyPress($event)">
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" >Alternate Contact</label>
+                          <div
+                            *ngIf="updateClientWarehouseForm.controls['alternateContact'].touched && updateClientWarehouseForm.controls['alternateContact'].invalid"
+                            class="alert-danger">
+                            <div
+                              *ngIf="updateClientWarehouseForm.controls['alternateContact'].errors.pattern || updateClientWarehouseForm.controls['alternateContact'].errors.maxlength || userForm.controls['alternateContact'].errors.minlength">
+                              Alternate contect must be at least 10 numbers
+                            </div>
+                          </div>
+                          <input type="text" class="form-control"  formControlName="alternateContact" [(ngModel)]="singleRecord.alternateContact" value={{singleRecord.alternateContact}} (keypress)="keyPress($event)">
+                        </div>
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" >Email</label>
+                          <div *ngIf="updateClientWarehouseForm.controls['email'].touched && updateClientWarehouseForm.controls['email'].invalid" class="alert-danger">
+                            <div *ngIf="updateClientWarehouseForm.controls['email'].errors?.pattern" class="text-danger">Please provide a valid email address</div>
+                          </div>
+                          <input type="text" class="form-control"  formControlName="email" [(ngModel)]="singleRecord.email" value={{singleRecord.email}}>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" >Address<span style="color:red">*</span></label>
+                          <div *ngIf="updateClientWarehouseForm.controls['address'].touched && updateClientWarehouseForm.controls['address'].invalid" class="alert-danger">
+                            <div *ngIf="updateClientWarehouseForm.controls['address'].errors && updateClientWarehouseForm.controls['address'].errors.required">address is required.</div></div>
+                          <input type="text" class="form-control"  formControlName="address" [(ngModel)]="singleRecord.address" value={{singleRecord.address}}>
+                        </div>
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" >Active</label>
+                          <input type="text" class="form-control" id="active" formControlName="active" [(ngModel)]="singleRecord.active" value={{singleRecord.active}}>
+                        </div>
+                      </div>
+
+
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-offset-2 col-lg-9">
+                        <button type="submit" class="btn btn-primary">update</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!--Table start hear-->
+            <div class="padd table-responsive" [hidden]="!isDisplay">
+              <table  datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                <thead>
+                <tr class="text-center" style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                  <th>ID</th>
+                  <th>Client ID</th>
+                  <th>WareHouse ID</th>
+                  <th>WareHouse Name</th>
+                  <th>Address</th>
+                  <th>Active</th>
+                  <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of clientWarehouses">
+                  <td>{{ item.id }}</td>
+                  <td>{{ item.clientCode }}</td>
+                  <td>{{ item.warehouseCode }}</td>
+                  <td>{{ item.warehouseName }}</td>
+                  <td>{{ item.address }}</td>
+                  <td>{{ item.active }}</td>
+                  <td>
+                    <a href="javascript:;" (click)="updateRecords(item.id)"><i class="fa fa-pencil" title="Edit" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;<a href="javascript:;" (click)="deleteRecords(item.id)"><i class="fa fa-trash-o" title="Delete" aria-hidden="true"></i></a>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</section>

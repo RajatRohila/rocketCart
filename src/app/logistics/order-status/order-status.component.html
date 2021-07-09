@@ -1,0 +1,337 @@
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <!--Loader start hear-->
+      <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" type = "ball-scale-multiple" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="card-body no-padding">
+              <div role="tabpanel">
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active"><a href="#IN-TRANSIT" aria-controls="IN-TRANSIT" role="tab" data-toggle="tab" aria-expanded="false" target="_self"  id="inTransit">Intransit</a></li>
+                  <li role="presentation" class=""><a href="#OUT-FOR-DELIVERY"  (click)="loadOutForDeliveryDataTable()" aria-controls="OUT-FOR-DELIVERY" role="tab" data-toggle="tab" aria-expanded="false" target="_self" id="outForDelivery">Out For Delivery</a></li>
+                  <li role="presentation" class=""><a href="#DELIVERED" (click)="loadDeliverdDataTable()" aria-controls="DELIVERED" role="tab" data-toggle="tab" aria-expanded="false" target="_self" id="deliverd">Deliverd</a></li>
+                  <li role="presentation" class=""><a href="#RTO" (click)="loadRtoDataTable()" aria-controls="RTO" role="tab" data-toggle="tab" aria-expanded="false" target="_self" id="rto">RTO</a></li>
+                  <li role="presentation" class=""><a href="#ORDER-CANCELLED" (click)="loadCancelledOrderDataTable()" aria-controls="ORDER-CANCELLED" role="tab" data-toggle="tab" aria-expanded="false" target="_self" id="cancleOrder">Cancelled</a></li>
+                  <li role="presentation" class=""><a href="#DELIVERY-ATTEMPTED" (click)="loadCancelledOrderDataTable()" aria-controls="DELIVERY-ATTEMPTED" role="tab" data-toggle="tab" aria-expanded="false" target="_self" id="deliveryAttempted">NDR</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div role="tabpanel" class="tab-pane active" id="IN-TRANSIT">
+                    <div class="padd">
+                      <div class="row">
+                        <div class="col-lg-offset-2"><br>&nbsp;&nbsp;
+                          <button type="button" (click)="onDownloadInTransitOrderReport()" class="btn btn btn-primary" style="background-color: green">Download Report</button>
+                        </div>
+                      </div>
+                      <div class="table-responsive">
+                        <table  datatable [dtOptions]="inTransitOrderDataTableSetting" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                          <thead>
+                          <tr class="text-center" style="background-color: #2f3e4c; color: #ffffff; height: 40px;">
+                            <th>CCT-AWB</th>
+                            <th>ORDER-DATE</th>
+                            <th>USER-NAME</th>
+                            <th>PICKUP-LOCATION-ID</th>
+                            <th>CLIENT</th>
+                            <th>PRODUCT</th>
+                            <th>PAYMENT-TYPE/PRODUCT-PRICE</th>
+                            <th>CONSIGNEE</th>
+                            <th>STATUS</th>
+                            <th>LAST STATUS DATE</th>
+                            <th>COURIER ID</th>
+                            <th>COURIER AWB</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let item of inTransitOrderArray; let i=index; let odd = odd" [ngClass]="odd ? 'odd_col' : 'even_col' ">
+                            <td>{{item.referanceNo }}</td>
+                            <td>{{item.orderDate | date:'yyyy-mm-dd hh:mm:ss' }}</td>
+                            <td>{{item.packetHistory[0].createdByName }}</td>
+                            <td>{{item.pickupLocation}}</td>
+                            <td>{{item.clientCode}}</td>
+                            <td>{{item.productName}}</td>
+                            <td>{{ item.paymentType}} <span style="color:green;font-weight:bold">Rs-{{ item.codAmount}}</span></td>
+                            <td>{{item.consigneeName}}</td>
+                            <td>{{item.currentStatus.statusName }}</td>
+                            <td>{{item.orderDate | date:'yyyy-mm-dd hh:mm:ss'}}</td>
+                            <td>{{item.courierCode}}</td>
+                            <td>{{item.courierAWBNumber}}</td>
+                          </tr>
+                          <tr *ngIf="inTransitOrderArray?.length == 0">
+                            <td colspan="4" class="no-data-available">No data!</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div role="tabpanel" class="tab-pane" id="OUT-FOR-DELIVERY">
+                    <div class="padd">
+                      <div class="row">
+                        <div class="col-lg-offset-2"><br>&nbsp;&nbsp;
+                          <button type="button" (click)="onDownloadOutForDeliveryReport()" class="btn btn btn-primary" style="background-color: green">Download Report</button>
+                        </div>
+                      </div>
+                      <div class="table-responsive">
+                        <table  datatable [dtOptions]="OFDOrderDataTableSetting" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                          <thead>
+                          <tr class="text-center" style="background-color: #2f3e4c; color: #ffffff; height: 40px;">
+                            <th>CCT-AWB</th>
+                            <th>ORDER-DATE</th>
+                            <th>USER-NAME</th>
+                            <th>PICKUP-LOCATION-ID</th>
+                            <th>CLIENT</th>
+                            <th>PRODUCT</th>
+                            <th>PAYMENT-TYPE/PRODUCT-PRICE</th>
+                            <th>CONSIGNEE</th>
+                            <th>STATUS</th>
+                            <th>LAST STATUS DATE</th>
+                            <th>COURIER ID</th>
+                            <th>COURIER AWB</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let item of OFDOrderArray; let i=index; let odd = odd" [ngClass]="odd ? 'odd_col' : 'even_col' ">
+                            <td>{{item.referanceNo }}</td>
+                            <td>{{item.orderDate | date:'yyyy-mm-dd hh:mm:ss' }}</td>
+                            <td>{{item.packetHistory[0].createdByName }}</td>
+                            <td>{{item.pickupLocation}}</td>
+                            <td>{{item.clientCode}}</td>
+                            <td>{{item.productName}}</td>
+                            <td>{{ item.paymentType}} <span style="color:green;font-weight:bold">Rs-{{ item.codAmount}}</span></td>
+                            <td>{{item.consigneeName}}</td>
+                            <td>{{item.currentStatus.statusName }}</td>
+                            <td>{{item.orderDate | date:'yyyy-mm-dd hh:mm:ss'}}</td>
+                            <td>{{item.courierCode}}</td>
+                            <td>{{item.courierAWBNumber}}</td>
+                          </tr>
+                          <tr *ngIf="OFDOrderArray?.length == 0">
+                            <td colspan="4" class="no-data-available">No data!</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <div role="tabpanel" class="tab-pane" id="DELIVERED">
+                    <div class="padd">
+                      <div class="row">
+                        <div class="col-lg-offset-2"><br>&nbsp;&nbsp;
+                          <button type="button" (click)="onDownloadDeliveredReport()" class="btn btn btn-primary" style="background-color: green">Download Report</button>
+                        </div>
+                      </div>
+                      <div class="table-responsive">
+                        <table  datatable [dtOptions]="deliverdOrderDataTableSetting" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                          <thead>
+                          <tr class="text-center" style="background-color: #2f3e4c; color: #ffffff; height: 40px;">
+                            <th>CCT-AWB</th>
+                            <th>ORDER-DATE</th>
+                            <th>USER-NAME</th>
+                            <th>PICKUP-LOCATION-ID</th>
+                            <th>CLIENT</th>
+                            <th>PRODUCT</th>
+                            <th>PAYMENT-TYPE/PRODUCT-PRICE</th>
+                            <th>CONSIGNEE</th>
+                            <th>STATUS</th>
+                            <th>LAST STATUS DATE</th>
+                            <th>COURIER ID</th>
+                            <th>COURIER AWB</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let item of deliverdOrderArray; let i=index; let odd = odd" [ngClass]="odd ? 'odd_col' : 'even_col' ">
+                            <td>{{item.referanceNo }}</td>
+                            <td>{{item.orderDate | date:'yyyy-mm-dd hh:mm:ss' }}</td>
+                            <td>{{item.packetHistory[0].createdByName }}</td>
+                            <td>{{item.pickupLocation}}</td>
+                            <td>{{item.clientCode}}</td>
+                            <td>{{item.productName}}</td>
+                            <td>{{ item.paymentType}} <span style="color:green;font-weight:bold">Rs-{{ item.codAmount}}</span></td>
+                            <td>{{item.consigneeName}}</td>
+                            <td>{{item.currentStatus.statusName }}</td>
+                            <td>{{item.orderDate | date:'yyyy-mm-dd hh:mm:ss'}}</td>
+                            <td>{{item.courierCode}}</td>
+                            <td>{{item.courierAWBNumber}}</td>
+                          </tr>
+                          <tr *ngIf="deliverdOrderArray?.length == 0">
+                            <td colspan="4" class="no-data-available">No data!</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                    </div>
+                  </div>
+
+
+                  <div role="tabpanel" class="tab-pane" id="RTO">
+                    <div class="padd">
+                      <div class="row">
+                        <div class="col-lg-offset-2"><br>&nbsp;&nbsp;
+                          <button type="button" (click)="onDownloadRTOReport()" class="btn btn btn-primary" style="background-color: green">Download Report</button>
+                        </div>
+                      </div>
+                      <div class="table-responsive">
+                        <table  datatable [dtOptions]="RTOOrderDataTableSetting" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                          <thead>
+                          <tr class="text-center" style="background-color: #2f3e4c; color: #ffffff; height: 40px;">
+                            <th>CCT-AWB</th>
+                            <th>ORDER-DATE</th>
+                            <th>USER-NAME</th>
+                            <th>PICKUP-LOCATION-ID</th>
+                            <th>CLIENT</th>
+                            <th>PRODUCT</th>
+                            <th>PAYMENT-TYPE/PRODUCT-PRICE</th>
+                            <th>CONSIGNEE</th>
+                            <th>STATUS</th>
+                            <th>LAST STATUS DATE</th>
+                            <th>COURIER ID</th>
+                            <th>COURIER AWB</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let item of rtoOrderArray; let i=index; let odd = odd" [ngClass]="odd ? 'odd_col' : 'even_col' ">
+                            <td>{{item.referanceNo }}</td>
+                            <td>{{item.orderDate | date:'yyyy-mm-dd hh:mm:ss' }}</td>
+                            <td>{{item.packetHistory[0].createdByName }}</td>
+                            <td>{{item.pickupLocation}}</td>
+                            <td>{{item.clientCode}}</td>
+                            <td>{{item.productName}}</td>
+                            <td>{{ item.paymentType}} <span style="color:green;font-weight:bold">Rs-{{ item.codAmount}}</span></td>
+                            <td>{{item.consigneeName}}</td>
+                            <td>{{item.currentStatus.statusName }}</td>
+                            <td>{{item.orderDate | date:'yyyy-mm-dd hh:mm:ss'}}</td>
+                            <td>{{item.courierCode}}</td>
+                            <td>{{item.courierAWBNumber}}</td>
+                          </tr>
+                          <tr *ngIf="rtoOrderArray?.length == 0">
+                            <td colspan="4" class="no-data-available">No data!</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+
+                    </div>
+                  </div>
+
+
+                  <div role="tabpanel" class="tab-pane" id="ORDER-CANCELLED">
+                    <div class="padd">
+                      <div class="row">
+                        <div class="col-lg-offset-2"><br>&nbsp;&nbsp;
+                          <button type="button" (click)="onDownloadCancelledOrderReport()" class="btn btn btn-primary" style="background-color: green">Download Report</button>
+                        </div>
+                      </div>
+                      <div class="table-responsive">
+                        <table  datatable [dtOptions]="orderCancelledDataTableSetting" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                          <thead>
+                          <tr class="text-center" style="background-color: #2f3e4c; color: #ffffff; height: 40px;">
+                            <th>CCT-AWB</th>
+                            <th>ORDER-DATE</th>
+                            <th>USER-NAME</th>
+                            <th>PICKUP-LOCATION-ID</th>
+                            <th>CLIENT</th>
+                            <th>PRODUCT</th>
+                            <th>PAYMENT-TYPE/PRODUCT-PRICE</th>
+                            <th>CONSIGNEE</th>
+                            <th>STATUS</th>
+                            <th>LAST STATUS DATE</th>
+                            <th>COURIER ID</th>
+                            <th>COURIER AWB</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let item of orderCancelledArray; let i=index; let odd = odd" [ngClass]="odd ? 'odd_col' : 'even_col' ">
+                            <td>{{item.referanceNo }}</td>
+                            <td>{{item.orderDate | date:'yyyy-mm-dd hh:mm:ss' }}</td>
+                            <td>{{item.packetHistory[0].createdByName }}</td>
+                            <td>{{item.pickupLocation}}</td>
+                            <td>{{item.clientCode}}</td>
+                            <td>{{item.productName}}</td>
+                            <td>{{ item.paymentType}} <span style="color:green;font-weight:bold">Rs-{{ item.codAmount}}</span></td>
+                            <td>{{item.consigneeName}}</td>
+                            <td>{{item.currentStatus.statusName }}</td>
+                            <td>{{item.orderDate | date:'yyyy-mm-dd hh:mm:ss'}}</td>
+                            <td>{{item.courierCode}}</td>
+                            <td>{{item.courierAWBNumber}}</td>
+                          </tr>
+                          <tr *ngIf="orderCancelledArray?.length == 0">
+                            <td colspan="4" class="no-data-available">No data!</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+
+                    </div>
+                  </div>
+
+
+                  <div role="tabpanel" class="tab-pane" id="DELIVERY-ATTEMPTED">
+                    <div class="padd">
+                      <div class="row">
+                        <div class="col-lg-offset-2"><br>&nbsp;&nbsp;
+                          <button type="button" (click)="onDownloadDeliveryAttemptedReport()" class="btn btn btn-primary" style="background-color: green">Download Report</button>
+                        </div>
+                      </div>
+                      <div class="table-responsive">
+                        <table  datatable [dtOptions]="deliveryAttemptedDataTableSetting" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                          <thead>
+                          <tr class="text-center" style="background-color: #2f3e4c; color: #ffffff; height: 40px;">
+                            <th>CCT-AWB</th>
+                            <th>ORDER-DATE</th>
+                            <th>USER-NAME</th>
+                            <th>PICKUP-LOCATION-ID</th>
+                            <th>CLIENT</th>
+                            <th>PRODUCT</th>
+                            <th>PAYMENT-TYPE/PRODUCT-PRICE</th>
+                            <th>CONSIGNEE</th>
+                            <th>STATUS</th>
+                            <th>LAST STATUS DATE</th>
+                            <th>COURIER ID</th>
+                            <th>COURIER AWB</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let item of deliveryAttemptedArray; let i=index; let odd = odd" [ngClass]="odd ? 'odd_col' : 'even_col' ">
+                            <td>{{item.referanceNo }}</td>
+                            <td>{{item.orderDate | date:'yyyy-mm-dd hh:mm:ss' }}</td>
+                            <td>{{item.packetHistory[0].createdByName }}</td>
+                            <td>{{item.pickupLocation}}</td>
+                            <td>{{item.clientCode}}</td>
+                            <td>{{item.productName}}</td>
+                            <td>{{ item.paymentType}} <span style="color:green;font-weight:bold">Rs-{{ item.codAmount}}</span></td>
+                            <td>{{item.consigneeName}}</td>
+                            <td>{{item.currentStatus.statusName }}</td>
+                            <td>{{item.orderDate | date:'yyyy-mm-dd hh:mm:ss'}}</td>
+                            <td>{{item.courierCode}}</td>
+                            <td>{{item.courierAWBNumber}}</td>
+                          </tr>
+                          <tr *ngIf="deliveryAttemptedArray?.length == 0">
+                            <td colspan="4" class="no-data-available">No data!</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+
+                    </div>
+                  </div>
+
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</section>

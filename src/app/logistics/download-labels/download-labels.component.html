@@ -1,0 +1,48 @@
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <!--Loader start hear-->
+      <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" type = "ball-scale-multiple" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+      <div class="col-md-12 portlets">
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left"> Download Bukl Label and Invoice</div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <div class="padd">
+              <br><br>
+              <div class="row" style="margin: auto"><br>
+
+                <div class="col-lg-4">
+                  <select class="form-control" id="type" name="type">
+                    <option value="invoice" selected>Invoice</option>
+                    <option value="printLeble">Print Leble</option>
+                  </select>
+                </div>
+                <div class="col-lg-4">
+                  <input type="text" class="form-control" id="awbNumbers" name="awbNumbers" placeholder="Comma separated AWB Number..">
+                </div>
+                <div class="col-lg-4">
+                  <button type="button" class="btn btn-primary" (click)="downloadInvoiceAndPrintLable()" style="background-color: green">Download</button>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+
+
+      </div>
+    </div>
+
+
+
+  </section>
+
+</section>

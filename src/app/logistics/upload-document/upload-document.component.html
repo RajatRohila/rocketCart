@@ -1,0 +1,131 @@
+
+    <section id="main-content">
+      <section class="wrapper">
+        <!--overview start-->
+        <div class="row">
+          <!--Loader start hear-->
+          <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" type = "ball-scale-multiple" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+          <div class="col-md-12 portlets">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <div class="pull-left">Upload Documents</div>
+
+                <div class="clearfix"></div>
+              </div>
+              <div class="panel-body">
+                <div class="padd">
+                  <div class="form quick-post">
+                    <!-- Edit profile form (not working)-->
+                    <form class="form-horizontal" [formGroup]="form" (ngSubmit)="onSubmit()" >
+                      <!-- Title -->
+                      <div class="form-group">
+
+                        <div class="row">
+                          <div class="col-lg-3 col-lg-offset-1">
+                            <label class="control-label" for="title">Entity Type<span style="color:red">*</span></label>
+                            <select class="form-control"  formControlName="entityType" [(ngModel)]="uploadDocTypeValue" (change)='onChangeUploadTypeValue()'>
+                              <option value="">- Choose Documents Type -</option>
+                              <option value="CLIENT">CLIENT</option>
+                              <option value="COURIER">COURIER</option>
+                              <option value="COLOADER">COLOADER</option>
+                            </select>
+                          </div>
+
+                          <div class="col-lg-3 col-lg-offset-1" *ngIf="isClientActive">
+                            <label class="control-label " for="title">Entity Code<span style="color:red">*</span></label>
+                            <select class="form-control"  id="clientCode">
+                              <option value="">- Choose Client -</option>
+                              <option *ngFor="let item of clientList; let i = index" [value]="item.clientCode" >
+                                {{item.clientName}}
+                              </option>
+                            </select>
+                          </div>
+
+                          <div class="col-lg-3 col-lg-offset-1" *ngIf="isCourierActive">
+                            <label class="control-label " for="title">Entity Code<span style="color:red">*</span></label>
+                            <select class="form-control"  id="courierCode">
+                              <option value="">- Choose Courier -</option>
+                              <option *ngFor="let item of courierList; let i = index" [value]="item.courierCode" >
+                                {{item.courierName}}
+                              </option>
+                            </select>
+                          </div>
+
+
+                          <div class="col-lg-3 col-lg-offset-1" *ngIf="isColoaderActive">
+                            <label class="control-label " for="title">Entity Code<span style="color:red">*</span></label>
+                            <select class="form-control"  id="coloaderCode" >
+                              <option value="">- Choose Coloader -</option>
+                              <option *ngFor="let item of coloaderList; let i = index" [value]="item.coloaderCode" >
+                                {{item.coloaderName}}
+                              </option>
+                            </select>
+                          </div>
+
+                        </div><br>
+
+                        <!--<div class="row">
+                          <div class="col-lg-3 col-lg-offset-1">
+                            <label class="control-label" for="title">upoload Document Type<span style="color:red">*</span></label>
+                            <select class="form-control"formControlName="uploadDocType">
+                              <option value="">- Choose Document Type -</option>
+                              <option value="Client">Aadhar Card</option>
+                              <option value="PanCard">PanCard</option>
+                              <option value="GST">GST</option>
+                              <option value="Agreement">Agreement</option>
+                            </select>
+                          </div>
+
+
+                          <div class="col-lg-3 col-lg-offset-1" >
+                            <label class="control-label" for="title">Select Upload File<span style="color:red">*</span></label>
+                            <input type="file" class="form-control" name="file" accept=".pdf, .jpg" (change)="onFileChange($event)">
+                          </div>
+                        </div>-->
+
+                        <div class="row">
+                          <div class="col-lg-3 col-lg-offset-1" *ngIf="isGSTActive" >
+                            <label class="control-label" for="title">Select GST File<span style="color:red">*</span></label>
+                            <input type="file" class="form-control" name="gstFile" accept=".pdf, .jpg" (change)="onFileChange($event, 'GST')">
+                          </div>
+
+                          <div class="col-lg-3 col-lg-offset-1" *ngIf="isAgreementActive">
+                            <label class="control-label" for="title">Select Agreement File<span style="color:red">*</span></label>
+                            <input type="file" class="form-control" name="agreementFile" accept=".pdf, .jpg" (change)="onFileChange($event, 'AGREEMENT')">
+                          </div>
+                        </div><br>
+
+                        <div class="row">
+                          <div class="col-lg-3 col-lg-offset-1" *ngIf="isPanCardActive">
+                            <label class="control-label" for="title">Select PanCard File<span style="color:red">*</span></label>
+                            <input type="file" class="form-control" name="pancardFile" accept=".pdf, .jpg" (change)="onFileChange($event, 'PANCARD')">
+                          </div>
+
+                          <div class="col-lg-3 col-lg-offset-1" *ngIf="isAadharCardActive">
+                            <label class="control-label" for="title">Select AadharCard File<span style="color:red">*</span></label>
+                            <input type="file" class="form-control" name="aadharFile" accept=".pdf, .jpg" (change)="onFileChange($event, 'AADHAR')">
+                          </div>
+                        </div><br>
+
+                            <div class="row">
+                              <div class="col-lg-6 col-lg-offset-4"><button type="submit" class="btn btn-primary" [disabled]="isUploadButtonDisabled">Upload</button></div>
+                            </div>
+
+
+                      </div>
+
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+
+
+      </section>
+
+    </section>

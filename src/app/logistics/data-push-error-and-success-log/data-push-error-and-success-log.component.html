@@ -1,0 +1,105 @@
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <!--Loader start hear-->
+      <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" type = "ball-scale-multiple" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="card-body no-padding">
+              <div role="tabpanel">
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active"><a href="#DATA-ERROR-PUSH-LOG" aria-controls="DATA-ERROR-PUSH-LOG" role="tab" data-toggle="tab" aria-expanded="false" target="_self" id="dataErrorPushLog">Data Push ErrorLog</a></li>
+                  <li role="presentation" class=""><a href="#DATA-PUSH-SUCCESS-LOG" (click)="loadDataPushSuccessLogDataTableDataTable " aria-controls="DATA-PUSH-SUCCESS-LOG" role="tab" data-toggle="tab" aria-expanded="false" target="_self" id="dataPushSuccessLog">Data Push SuccessLog</a></li>
+                </ul>
+                <div class="tab-content">
+
+                  <div role="tabpanel" class="tab-pane active" id="DATA-ERROR-PUSH-LOG">
+                    <div class="padd">
+                      <div class="table-responsive">
+                        <table  datatable [dtOptions]="DataPushErrorLogDataTableSetting" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                          <thead>
+                          <tr class="text-center" style="background-color: #2f3e4c; color: #ffffff; height: 40px;">
+                            <th>AWB</th>
+                            <th>URL</th>
+                            <th>REQUEST</th>
+                            <th>RESPONSE</th>
+                            <th>MESSAGE</th>
+                            <th>STATUS</th>
+                            <th>DATA</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let item of dtaPushErrorLog; let i=index; let odd = odd" [ngClass]="odd ? 'odd_col' : 'even_col' ">
+                            <td>{{item.awb }}</td>
+                            <td>{{item.url}}</td>
+                            <td>{{item.request}}</td>
+                            <td>{{item.response}}</td>
+                            <td>{{item.message}}</td>
+                            <td>{{item.status}}</td>
+                            <td>{{item.date}}</td>
+                          </tr>
+                          <tr *ngIf="dtaPushErrorLog?.length == 0">
+                            <td colspan="4" class="no-data-available">No data!</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+
+                    </div>
+                  </div>
+
+                  <div role="tabpanel" class="tab-pane" id="DATA-PUSH-SUCCESS-LOG">
+                    <div class="padd">
+                      <div class="table-responsive">
+                        <table  datatable [dtOptions]="DataPushSuccessLogDataTableSetting" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                          <thead>
+
+                          <tr class="text-center" style="background-color: #2f3e4c; color: #ffffff; height: 40px;">
+                            <th>AWB</th>
+                            <th>URL</th>
+                            <th>REQUEST</th>
+                            <th>RESPONSE</th>
+                            <th>MESSAGE</th>
+                            <th>STATUS</th>
+                            <th>DATA</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let item of dtaPushSuccessLog; let i=index; let odd = odd" [ngClass]="odd ? 'odd_col' : 'even_col' ">
+                            <td>{{item.awb }}</td>
+                            <td>{{item.url}}</td>
+                            <td>{{item.request}}</td>
+                            <td>{{item.response}}</td>
+                            <td>{{item.message}}</td>
+                            <td>{{item.status}}</td>
+                            <td>{{item.date}}</td>
+                          </tr>
+                          <tr *ngIf="dtaPushSuccessLog?.length == 0">
+                            <td colspan="4" class="no-data-available">No data!</td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+
+                    </div>
+                  </div>
+
+
+
+
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</section>

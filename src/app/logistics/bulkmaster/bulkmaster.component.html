@@ -1,0 +1,184 @@
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <!--Loader start hear-->
+      <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" type = "ball-scale-multiple" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Bulk Header Master
+              <BUTTON *ngIf="isDisplay" class="btn btn-primary" (click)="addNew()">Add Record</BUTTON>
+              <!--<button *ngIf="isDisplay" class="btn btn-default"> <a href="#" (click)="addNew()">Add  Record</a></button>&nbsp;-->
+              <!-- <button *ngIf="isFirst" class="btn btn-default"> <a href="#" (click)="addNew()">Add  Record</a></button>&nbsp;-->
+               <!-- <button *ngIf="isAdd" class="btn btn-default"> <a href="#" (click)="showRecords()">Show  Records</a></button>-->
+             </div>
+
+             <div class="clearfix"></div>
+           </div>
+           <div class="panel-body">
+             <!--Add form start hear-->
+             <div class="padd" *ngIf="isAdd">
+               <div class="form quick-post">
+                 <!-- Edit profile form (not working)-->
+                <form class="form-horizontal" [formGroup]="bulkMasterForm" (ngSubmit)="onSubmit()" >
+                  <!-- Title -->
+                  <div class="form-group">
+                    <div class="row">
+                    <label class="control-label col-lg-2" for="title"> Name<span style="color:red">*</span></label>
+                    <div class="col-lg-3">
+                      <input type="text" class="form-control"  formControlName="name">
+                    </div>
+                    <div *ngIf="bulkMasterForm.controls['name'].touched && bulkMasterForm.controls['name'].invalid" class="alert-danger">
+                      <div *ngIf="bulkMasterForm.controls['name'].errors && bulkMasterForm.controls['name'].errors.required"> Name is required.</div>
+                    </div>
+                    </div><br>
+                    <div class="row">
+                      <label class="control-label col-lg-2" for="title">Bulk Header ID<span style="color:red">*</span></label>
+                      <div class="col-lg-3">
+                        <ng-multiselect-dropdown name="bulkHeaderIds" [placeholder]="'- Choose Bulk Header - '" [settings]="dropdownSettings" [data]="bulkHeaderList"
+                                                 formControlName="bulkHeaderIds" [disabled]="disabled"
+                                                 [(ngModel)]="selectedItems" (onSelect)="onItemSelect($event)"
+                                                  (onDeSelect)="onDeSelect ($event)"  (onDeSelectAll)="onDeselectAll()"  (onSelectAll)="onSelectAll($event)">
+                        </ng-multiselect-dropdown>
+                      </div>
+
+                    </div><br>
+
+                        <div class="row">
+                          <label class="control-label col-lg-2" for="title"> Bulk Header Sequence<span style="color:red">*</span></label>
+                          <div class="col-lg-3">
+                            <textarea class="form-control"  formControlName="bulkHeaderSequenceIds" rows="4" cols="100"
+                                      [(ngModel)]="bulkHeaderSequencCodes" (change)="onChangeHeaderValue()"></textarea>
+                            <!--<input type="text" class="form-control"  formControlName="bulkHeaderSequenceIds" [(ngModel)]="selectedItems">-->
+                          </div>
+                          <div *ngIf="bulkMasterForm.controls['bulkHeaderSequenceIds'].touched && bulkMasterForm.controls['bulkHeaderSequenceIds'].invalid" class="alert-danger">
+                            <div *ngIf="bulkMasterForm.controls['bulkHeaderSequenceIds'].errors && bulkMasterForm.controls['bulkHeaderSequenceIds'].errors.required"> BulkHeader SequenceIds is required.</div>
+                          </div>
+                        </div><br>
+                    </div>
+
+                  <!-- Content -->
+                  <!-- Buttons -->
+                  <div class="form-group">
+                    <!-- Buttons -->
+                    <div class="col-lg-offset-2 col-lg-9">
+                      <button type="submit" class="btn btn-primary"[disabled]="!bulkMasterForm.valid">Save</button>&nbsp;&nbsp;&nbsp;
+                      <button type="reset" class="btn btn-default">Reset</button>&nbsp;&nbsp;&nbsp;
+                      <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+            </div>
+             <!--Update form start hear-->
+            <div class="padd" *ngIf="isUpdate">
+              <div class="form quick-post">
+                <form class="form-horizontal" [formGroup]="updateBulkMasterForm" (ngSubmit)="onUpdateSubmit()">
+                  <div *ngIf="singleRecord.id">
+                    <div class="form-group">
+                      <!--Object id is hidden-->
+                      <div class="row">
+                        <input readonly type="hidden"  [(ngModel)]="singleRecord.id" formControlName="id" value={{singleRecord.id}}>
+                      </div><br>
+
+
+                    <div class="row">
+                      <label class="control-label col-lg-2" for="title"> Name<span style="color:red">*</span></label>
+                      <div class="col-lg-3">
+                        <input type="text" class="form-control" id="name" formControlName="name" [(ngModel)]="singleRecord.name" value={{singleRecord.name}}>
+                      </div>
+                      <div *ngIf="updateBulkMasterForm.controls['name'].touched && updateBulkMasterForm.controls['name'].invalid" class="alert-danger">
+                        <div *ngIf="updateBulkMasterForm.controls['name'].errors && updateBulkMasterForm.controls['name'].errors.required"> Name is required.</div>
+                      </div>
+                    </div><br>
+
+                      <div class="row">
+                        <label class="control-label col-lg-2" for="title">BulkHeaderIds<span style="color:red">*</span></label>
+                        <div class="col-lg-3">
+                          <ng-multiselect-dropdown name="bulkHeaderIds" [placeholder]="'- Choose Bulk Header - '" [settings]="dropdownSettings" [data]="bulkHeaderList"
+                                                   formControlName="bulkHeaderIds" [disabled]="disabled"
+                                                   [(ngModel)]="selectedItems" (onSelect)="onItemSelect($event)"
+                                                   (onDeSelect)="onDeSelect ($event)"  (onDeSelectAll)="onDeselectAll()" (onSelectAll)="onSelectAll($event)">
+                          </ng-multiselect-dropdown>
+                        </div>
+
+                      </div><br>
+
+                      <div class="row">
+                        <label class="control-label col-lg-2" for="title"> BulkHeader Sequence<span style="color:red">*</span></label>
+                        <div class="col-lg-3">
+                            <textarea class="form-control"  formControlName="bulkHeaderSequenceIds" rows="4" cols="100"
+                                      [(ngModel)]="bulkHeaderSequencCodes" (change)="onChangeHeaderValue()"></textarea>
+                        </div>
+                        <div *ngIf="updateBulkMasterForm.controls['bulkHeaderSequenceIds'].touched && updateBulkMasterForm.controls['bulkHeaderSequenceIds'].invalid" class="alert-danger">
+                          <div *ngIf="updateBulkMasterForm.controls['bulkHeaderSequenceIds'].errors && updateBulkMasterForm.controls['bulkHeaderSequenceIds'].errors.required"> BulkHeader SequenceIds is required.</div>
+                        </div>
+                      </div><br>
+
+                    <div class="row">
+                      <label class="control-label col-lg-2" for="title">Active<span style="color:red">*</span></label>
+                      <div class="col-lg-3">
+                        <input type="text" class="form-control" id="active" formControlName="active" [(ngModel)]="singleRecord.active" value={{singleRecord.active}}>
+                      </div>
+                      <div *ngIf="updateBulkMasterForm.controls['active'].touched && updateBulkMasterForm.controls['active'].invalid" class="alert-danger">
+                        <div *ngIf="updateBulkMasterForm.controls['active'].errors && updateBulkMasterForm.controls['active'].errors.required">Active is required.</div>
+                      </div>
+                    </div>
+                    </div>
+                    <!-- Content -->
+                    <!-- Buttons -->
+                    <div class="form-group">
+                      <div class="col-lg-offset-2 col-lg-9">
+                        <button type="submit" class="btn btn-primary">update</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+            </div>
+
+             <div class="padd table-responsive" [hidden]="!isDisplay">
+               <table  datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                 <thead>
+                 <tr class="text-center" style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                   <th>ID</th>
+                   <th>Name</th>
+                   <th>BulkHeaderIds</th>
+                   <th>Active</th>
+                   <th>Action</th>
+                   <!--<th>update</th>
+                   <th>delete</th>-->
+                 </tr>
+                 </thead>
+                 <tbody>
+                 <tr *ngFor="let item of bulkMasters">
+                   <td>{{ item.id }}</td>
+                   <td>{{ item.name }}</td>
+                   <td>{{ item.bulkHeaderIds }}</td>
+                   <td>{{ item.active }}</td>
+                   <td>
+                     <a href="javascript:;" (click)="updateRecords(item.id)"><i class="fa fa-pencil" title="Edit" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                     &nbsp;<a href="javascript:;" (click)="deleteRecords(item.id)"><i class="fa fa-trash-o" title="Delete" aria-hidden="true"></i></a>
+                   </td>
+                 </tr>
+                 <tr *ngIf="bulkMasters?.length == 0">
+                   <td colspan="4" class="no-data-available">No data!</td>
+                 </tr>
+                 </tbody>
+               </table>
+             </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+
+  </section>
+
+</section>

@@ -1,0 +1,136 @@
+<section id="main-content">
+  <!--<script src="https://checkout.razorpay.com/v1/checkout.js"></script>-->
+  <section class="wrapper">
+    <!--overview start-->
+
+    <div class="card">
+      <div class="card-body">
+        <form class="form-horizontal" [formGroup]="checkoutForm" (ngSubmit)="proceed()">
+          <div class="row">
+            <div class="col-lg-3" style="border-right-style:dotted; border-width: 1px;">
+              <div class="icon title"><span style="color: green"> &nbsp;<i class="fa fa-inr fa-2x "></i>
+			                        </span> &nbsp;<span id="walletBalance" style="font-size: 30px; color: green">{{clientWalletAmount}}</span><br/>Your Wallet Balance</div>
+            </div>
+            <div class="col-lg-3" style="border-right-style:dotted; border-width: 1px;">
+              <div class="icon title"><span style="color: green"> &nbsp;<i class="fa fa-inr fa-2x "></i>
+			                        </span> &nbsp;<span id="rewardBalance" style="font-size: 30px; color: green">{{clientRewardAmount}}</span><br/>Your Reward Balance</div>
+            </div>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <div class="col-lg-3">
+              <div class="form-group required">&nbsp;&nbsp;<br>
+                <input type="text" formControlName="amount" onkeyup="if (/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')" class="form-control" id="amount" placeholder="Enter Amount to be Added in wallet" />
+                <!--<div *ngIf="saleOrderForm.controls['consigneeEmailId'].errors?.pattern" class="text-danger">Please provide a valid email address</div>-->
+                <div *ngIf="checkoutForm.controls['amount'].touched && checkoutForm.controls['amount'].invalid" class="alert-danger">
+                  <div *ngIf="checkoutForm.controls['amount'].errors && checkoutForm.controls['amount'].errors.required">Amount is required.</div>
+
+                </div>
+
+              </div>
+            </div>
+            <div class="col-lg-2"><br>
+              <button type="submit" class="btn btn-success actionButton" id="addButton"><i class="fa fa-inr"></i>&nbsp;ADD MONEY</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div><br>
+
+    <div class="row">
+      <!--Loader start hear-->
+      <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" type = "ball-scale-multiple" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+
+      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="card-body no-padding">
+              <div role="tabpanel">
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active"><a href="#PAYMENT_GETWAY" aria-controls="PAYMENT_GETWAY" role="tab" data-toggle="tab" aria-expanded="false" target="_self"  id="paymentGatewayTransaction">Payment Gateway Transaction</a></li>
+                  <li role="presentation" class=""><a href="#READY-TO-SHIP" aria-controls="READY-TO-SHIP" role="tab" data-toggle="tab" aria-expanded="false" target="_self" id="readyToShip">Order Transaction Log</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div role="tabpanel" class="tab-pane active" id="PAYMENT_GETWAY">
+                    <div class="row">
+                      <div class="col-lg-offset-2"><br>
+                        <button type="button"  class="btn btn btn-primary" (click)="downloadPaymentGetWayLogsReport()" style="background-color: green">Download Report</button>&nbsp;&nbsp;
+                      </div>
+                    </div>
+                    <div class="padd table-responsive">
+                      <table  datatable [dtOptions]="tableSetting" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                        <thead>
+                        <tr class="text-center" style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                          <th>CLIENT</th>
+                          <th>PAYMENT_ID</th>
+                          <th>AMOUNT</th>
+                          <th>STATUS</th>
+                          <th>METHOD</th>
+                          <th>EMAIL</th>
+                          <th>CONTACT</th>
+                          <th>REMARKS</th>
+                          <th>DATE</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let item of paymentgetWayLogArray; let i=index; let odd = odd" [ngClass]="odd ? 'odd_col' : 'even_col' ">
+
+                          <td>{{ item.clientCode }}</td>
+                          <td>{{ item.paymentId }}</td>
+                          <td>{{ item.amount}}</td>
+                          <td>{{ item.status }}</td>
+                          <td>{{ item.method }}</td>
+                          <td>{{ item.email }}</td>
+                          <td>{{ item.contact }}</td>
+                          <td>{{ item.remarks }}</td>
+                          <td>{{ item.date }}</td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div role="tabpanel" class="tab-pane" id="READY-TO-SHIP">
+                    <div class="padd">
+                      <div class="row">
+                        <div class="col-lg-offset-2"><br>
+                          <button type="button"  class="btn btn btn-primary" (click)="saleOrderTransactionLogReport()" style="background-color: green">Download Report</button>&nbsp;&nbsp;
+                        </div>
+                      </div>
+                      <table  datatable [dtOptions]="transactionTableSetting" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                        <thead>
+                        <tr class="text-center" style="background-color: #2f3e4c; color: #ffffff; height: 40px;">
+                          <th>CLIENT CODE</th>
+                          <th>AWB NUMBER</th>
+                          <th>AMOUNT</th>
+                          <th>PREVIOUS AMOUNT</th>
+                          <th>MODIFIED AMOUNT</th>
+                          <th>TRANSACTION TYPE</th>
+                          <th>DATE</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let item of readyToShipArray; let i=index; let odd = odd" [ngClass]="odd ? 'odd_col' : 'even_col' ">
+                          <td>{{ item.clientCode }}</td>
+                          <td>{{ item.awbNumber}}</td>
+                          <td>{{ item.amount}}</td>
+                          <td>{{ item.previousAmount}}</td>
+                          <td>{{ item.modifiedAmount}}</td>
+                          <td>{{ item.transactionType}}</td>
+                          <td>{{ item.date }}</td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</section>

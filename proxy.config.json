@@ -1,0 +1,12 @@
+
+[
+  {
+    "context": [
+      "/api/**",
+      "/auth/*"
+    ],
+    "target": "http://localhost:8081",
+    "secure": false,
+    "timeout": 3600000
+  }
+]

@@ -1,0 +1,69 @@
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <!--Loader start hear-->
+      <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" type = "ball-scale-multiple" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Upload Courier Details</div>
+
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <div class="padd">
+              <div class="form quick-post">
+                <!-- Edit profile form (not working)-->
+                <form class="form-horizontal" [formGroup]="form" (ngSubmit)="onSubmit()" >
+                  <!-- Title -->
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-lg-2 col-lg-offset-1"> <span style="color:green;">Total Records = {{responseBody.totalRecord}}</span> </div>
+                      <div class="col-lg-2"> <span style="color:green;">Success Records = {{responseBody.successRecord}}</span></div>
+                      <div class="col-lg-2"> <span style="color:red;">Error Records = {{responseBody.errorRecord}}</span></div>
+                      <div class="col-lg-4">
+                        <div class="row">
+                          <div class="col-lg-6"><button [class.col-lg-6]="" type="button" class="btn btn-primary" (click)="downloadSuccessFile()">Download Success File</button></div>
+                          <div class="col-lg-6"><button type="button" class="btn btn-danger" (click)="downloadErrorFile()">Download Error File</button></div>
+                        </div>
+                      </div>
+                    </div><br>
+                    <!--Progress Bar start hear-->
+                    <div class="row" *ngIf="isUploadStart">
+                      <div class="col-lg-10 col-lg-offset-1">
+                        <div class="progress" style="height: 20px;">
+                          <div class="progress-bar progress-bar-striped progress-bar-animated" style="{{'width:' + uploadPresentage +'%'}}; height: 20px;"> {{uploadPresentage+'%'}}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--Progress Bar end hear-->
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" for="title">Select Upload File<span style="color:red">*</span></label>
+                        <input type="file" class="form-control" name="file" accept=".xlsx, .xls" (change)="onFileChange($event)">
+                      </div>
+                      <div class="col-lg-4"><br>
+                        <div class="row">
+                          <div class="col-lg-6"><button type="submit" class="btn btn-primary" [disabled]="isUploadButtonDisabled">Upload</button></div>
+                          <div class="col-lg-6"><button type="button" class="btn btn-primary" (click)="downloadTemplate()">Download Template</button></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+
+
+  </section>
+
+</section>

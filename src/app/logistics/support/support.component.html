@@ -1,0 +1,258 @@
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <!--Loader start hear-->
+      <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" type = "ball-scale-multiple" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+      <div class="col-md-12 portlets">
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Delete Status</div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <div class="padd">
+              <div class="form quick-post">
+                <!-- Edit profile form (not working)-->
+                <form class="form-horizontal" >
+                  <!-- Title -->
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-lg-3 col-lg-offset-1">
+                        <label class="control-label" >Status<span style="color:red">*</span></label>
+                        <select class="form-control" id="status" name="status">
+                          <option value="">- Choose Status -</option>
+                          <option *ngFor="let item of statusList; let i = index" [value]="item.statusCode" >
+                            {{item.statusName}}
+                          </option>
+                        </select>
+                      </div>
+                      <div class="col-lg-3">
+                        <label class="control-label " for="title">Awb Numbers<span style="color:red">*</span></label>
+                        <textarea id="awbs" name="awbs" rows="1" cols="30"></textarea>
+                        <!--<input type="textarea" class="form-control" id="awbs" name="awbs">-->
+                      </div>
+                      <div class="col-lg-3"><br>
+                        <div class="row">
+                          <div class="col-lg-6"><button type="update" (click)="onUpdateStatus()" class="btn btn-primary" >Update status</button></div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Update Order Details</div>
+
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <div class="padd">
+              <div class="form quick-post">
+                <!-- Edit profile form (not working)-->
+                <form class="form-horizontal" [formGroup]="form" (ngSubmit)="onSubmit()" >
+                  <!-- Title -->
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-lg-2 col-lg-offset-1"> <span style="color:green;">Total Records = {{responseBody.totalRecord}}</span> </div>
+                      <div class="col-lg-2"> <span style="color:green;">Success Records = {{responseBody.successRecord}}</span></div>
+                      <div class="col-lg-2"> <span style="color:red;">Error Records = {{responseBody.errorRecord}}</span></div>
+                      <div class="col-lg-4">
+                        <div class="row">
+                          <div class="col-lg-6"><button [class.col-lg-6]="" type="button" class="btn btn-primary" (click)="downloadSuccessFile()">Download Success File</button></div>
+                          <div class="col-lg-6"><button type="button" class="btn btn-danger" (click)="downloadErrorFile()">Download Error File</button></div>
+                        </div>
+                      </div>
+                    </div><br>
+                    <!--Progress Bar start hear-->
+                    <div class="row" *ngIf="isUploadStart">
+                      <div class="col-lg-10 col-lg-offset-1">
+                        <div class="progress" style="height: 20px;">
+                          <div class="progress-bar progress-bar-striped progress-bar-animated" style="{{'width:' + uploadPresentage +'%'}}; height: 20px;"> {{uploadPresentage+'%'}}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--Progress Bar end hear-->
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" for="title">Select Upload File<span style="color:red">*</span></label>
+                        <input type="file" class="form-control" name="file" accept=".xlsx, .xls" (change)="onFileChange($event)">
+                      </div>
+                      <div class="col-lg-4"><br>
+                        <div class="row">
+                          <div class="col-lg-6"><button type="submit" class="btn btn-primary" [disabled]="isUploadButtonDisabled">Upload</button></div>
+                          <div class="col-lg-6"><button type="button" class="btn btn-primary" (click)="downloadTemplate()">Download Template</button></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--<div class="form-group">
+                    &lt;!&ndash; Buttons &ndash;&gt;
+                    <div class="col-lg-offset-2 col-lg-9">
+                      <button type="submit" class="btn btn-primary" >Upload</button>
+                    </div>
+                  </div>-->
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Cancel Order</div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <div class="padd">
+              <div class="form quick-post">
+                <form class="form-horizontal">
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-lg-3 col-lg-offset-1">&nbsp;
+                        <label class="control-label " for="title">Enter Awb Comma Separated<span style="color:red">*</span></label>
+                        <textarea id="awb" name="awb" rows="1" cols="30"></textarea>
+                      </div>
+                      <div class="col-lg-4 col-lg-offset-1"><br>
+                         <!-- <button type="button" (click)="cancelButtonAction()" class="btn  btn-primary">Cancel</button>&nbsp;-->
+                        <button type="button" (click)="orderCancellation()" class="btn  btn-primary">Cancel</button>
+                      </div>
+                    </div>
+
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Update Courier Details</div>
+
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <div class="padd">
+              <div class="form quick-post">
+                <!-- Edit profile form (not working)-->
+                <form class="form-horizontal" [formGroup]="updateCourierForm" (ngSubmit)="onUploade()" >
+                  <!-- Title -->
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-lg-2 col-lg-offset-1"> <span style="color:green;">Total Records = {{responseBody.totalRecord}}</span> </div>
+                      <div class="col-lg-2"> <span style="color:green;">Success Records = {{responseBody.successRecord}}</span></div>
+                      <div class="col-lg-2"> <span style="color:red;">Error Records = {{responseBody.errorRecord}}</span></div>
+                      <div class="col-lg-4">
+                        <div class="row">
+                          <div class="col-lg-6"><button [class.col-lg-6]="" type="button" class="btn btn-primary" (click)="downloadSuccessFile()">Download Success File</button></div>
+                          <div class="col-lg-6"><button type="button" class="btn btn-danger" (click)="downloadErrorFile()">Download Error File</button></div>
+                        </div>
+                      </div>
+                    </div><br>
+                    <!--Progress Bar start hear-->
+                    <div class="row" *ngIf="isUploadStart">
+                      <div class="col-lg-10 col-lg-offset-1">
+                        <div class="progress" style="height: 20px;">
+                          <div class="progress-bar progress-bar-striped progress-bar-animated" style="{{'width:' + uploadPresentage +'%'}}; height: 20px;"> {{uploadPresentage+'%'}}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--Progress Bar end hear-->
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" for="title">Select Upload File<span style="color:red">*</span></label>
+                        <input type="file" class="form-control" name="file" accept=".xlsx, .xls" (change)="onFileChange($event)">
+                      </div>
+                      <div class="col-lg-4"><br>
+                        <div class="row">
+                          <div class="col-lg-6"><button type="submit" class="btn btn-primary" [disabled]="isUploadButtonDisabled">Upload</button></div>
+                          <div class="col-lg-6"><button type="button" class="btn btn-primary" (click)="downloadCourierTemplate()">Download Template</button></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--<div class="form-group">
+                    &lt;!&ndash; Buttons &ndash;&gt;
+                    <div class="col-lg-offset-2 col-lg-9">
+                      <button type="submit" class="btn btn-primary" >Upload</button>
+                    </div>
+                  </div>-->
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Update SaleOrder Details </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <div class="padd">
+              <div class="form quick-post">
+                <!-- Edit profile form (not working)-->
+                <form class="form-horizontal" >
+                  <!-- Title -->
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-lg-3 col-lg-offset-1">
+                        <label class="control-label" for="title">Select  Update Type<span style="color:red">*</span></label>
+                        <select class="form-control" id="field" name="field">
+                          <option value="">- Choose Fields -</option>
+                          <option *ngFor="let item of fieldsList; let i = index" [value]="item" >
+                            {{item}}
+                          </option>
+                        </select>
+                      </div>
+                      <div class="col-lg-3">
+                        <label class="control-label" for="title">Update Value<span style="color:red">*</span></label>
+                        <input type="text" id="updatableValue" name="updatableValue" placeholder="Enter Value">
+                      </div>
+                      <div class="col-lg-3">
+                        <label class="control-label" for="title">AWB Numbers<span style="color:red">*</span></label>
+                        <input type="text" id="awbNumbers" name="awbNumbers" placeholder="Enter Comma Separated AWB numbers">
+                      </div>
+
+                      <div class="col-lg-2"><br>
+                       <button type="update" (click)="onUpdateSaleOrdeDetails()" class="btn btn-primary" >UPDATE</button>
+                      </div>
+                    </div>
+                    <div class="row" id="updateError">
+                      <span style="color:red" >{{errorList}}</span>
+                    </div>
+
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+      </div>
+    </div>
+
+
+
+  </section>
+
+</section>

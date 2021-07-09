@@ -1,0 +1,263 @@
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <!--Loader start hear-->
+      <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="large" color="#fff" type="ball-scale-multiple" [fullScreen]="true"><p style="color: white"> Loading... </p></ngx-spinner>
+      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Client Courier WareHouse Mapping</div>
+            <BUTTON *ngIf="isDisplay" class="btn btn-primary  col-lg-offset-1" (click)="excalUpload()">Upload Excel</BUTTON>
+            <BUTTON *ngIf="isDisplay" class="btn btn-primary  col-lg-offset-1" (click)="addNew()">Add Record</BUTTON>&nbsp;&nbsp;&nbsp;
+            <BUTTON *ngIf="isDisplay" class="btn btn-primary" (click)="onDownloadClientWarehouseMappingReport()">Download Report</BUTTON>
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <div class="padd" *ngIf="isUpload">
+              <div class="form quick-post">
+                <!-- Edit profile form (not working)-->
+                <form class="form-horizontal" [formGroup]="form" (ngSubmit)="onExcelUpload()">
+                  <!-- Title -->
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-lg-2 col-lg-offset-1"><span style="color:green;">Total Records = {{responseBody.totalRecord}}</span></div>
+                      <div class="col-lg-2"><span style="color:green;">Success Records = {{responseBody.successRecord}}</span></div>
+                      <div class="col-lg-2"><span style="color:red;">Error Records = {{responseBody.errorRecord}}</span>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="row">
+                          <div class="col-lg-6">
+                            <button [class.col-lg-6]="" type="button" class="btn btn-primary" (click)="downloadSuccessFile()">Download Success File</button>
+                          </div>
+                          <div class="col-lg-6">
+                            <button type="button" class="btn btn-danger" (click)="downloadErrorFile()">Download Error File</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div><br>
+                    <!--Progress Bar start hear-->
+                    <div class="row" *ngIf="isUploadStart">
+                      <div class="col-lg-10 col-lg-offset-1">
+                        <div class="progress" style="height: 20px;">
+                          <div class="progress-bar progress-bar-striped progress-bar-animated" style="{{'width:' + uploadPresentage +'%'}}; height: 20px;"> {{uploadPresentage+'%'}}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--Progress Bar end hear-->
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" for="title">Select Upload File<span
+                          style="color:red">*</span></label>
+                        <input type="file" class="form-control" name="file" (change)="onFileChange($event)">
+                      </div>
+                      <div class="col-lg-4"><br>
+                        <div class="row">
+                          <div class="col-lg-6">
+                            <button type="submit" class="btn btn-primary" >Upload</button>
+                          </div>
+                          <div class="col-lg-6">
+                            <button type="button" class="btn btn-primary" (click)="downloadTemplate()">Download Template
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+
+                    <div class="form-group">
+                      <div class="col-lg-offset-4 col-lg-7">
+                        <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                      </div>
+                    </div>
+
+                  </div>
+                </form>
+
+              </div>
+
+            </div>
+            <div class="padd" *ngIf="isAdd">
+              <div class="form quick-post">
+                <form class="form-horizontal" [formGroup]="clientCourierWarehouseMappingForm" (ngSubmit)="onSubmit()">
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label " for="title">Client Code<span style="color:red">*</span></label>
+                        <select class="form-control" formControlName="clientCode" id="clientCode" (ngModelChange)="getclientWarehouseRecords('clientCode')">
+                          <option value="">- Choose Client -</option>
+                          <option *ngFor="let item of clientCodeList; let i = index" [value]="item.clientCode">
+                            {{item.clientName}}
+                          </option>
+                        </select>
+                      </div>
+
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label " for="title">Client Warehouse Code<span style="color:red">*</span></label>
+                        <select class="form-control" formControlName="clientWarehouseCode">
+                          <option value="">- Choose service type -</option>
+                          <option *ngFor="let item of clientWarehouseCodeList; let i = index" [value]="item.warehouseCode">
+                            {{item.warehouseName}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label " for="title">Service Provider Code<span style="color:red">*</span></label>
+                        <select class="form-control" formControlName="serviceProviderCode">
+                          <option value="">- Choose service type -</option>
+                          <option *ngFor="let item of serviceProviderCodeList; let i = index" [value]="item.serviceProviderCode">
+                            {{item.serviceProviderName}}
+                          </option>
+                        </select>
+                      </div>
+
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label">Service Provider Warehouse Code<span style="color:red">*</span></label>
+                        <div
+                          *ngIf="clientCourierWarehouseMappingForm.controls['serviceProviderWarehouseCode'].touched && clientCourierWarehouseMappingForm.controls['serviceProviderWarehouseCode'].invalid"
+                          class="alert-danger">
+                          <div
+                            *ngIf="clientCourierWarehouseMappingForm.controls['serviceProviderWarehouseCode'].errors && clientCourierWarehouseMappingForm.controls['serviceProviderWarehouseCode'].errors.required">
+                            Service Provider WareHouseCode is required.
+                          </div>
+                        </div>
+                        <input type="text" class="form-control" formControlName="serviceProviderWarehouseCode">
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="col-lg-offset-4 col-lg-7">
+                      <button type="submit" class="btn btn-primary" [disabled]="!clientCourierWarehouseMappingForm.valid">Save</button>&nbsp;&nbsp;&nbsp;
+                      <button type="reset" class="btn btn-default">Reset</button>&nbsp;&nbsp;&nbsp;
+                      <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="padd" *ngIf="isUpdate">
+              <div class="form quick-post">
+                <form class="form-horizontal" [formGroup]="updateClientCourierWarehouseMappingForm" (ngSubmit)="onUpdateSubmit()">
+                  <div *ngIf="singleRecord.id">
+                    <div class="form-group">
+                      <!--Object id is hidden-->
+                      <div class="row">
+                        <input readonly type="hidden"  [(ngModel)]="singleRecord.id" formControlName="id" value={{singleRecord.id}}>
+                      </div><br>
+
+
+                      <div class="row">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label " for="title">Client Code<span style="color:red">*</span></label>
+                          <select class="form-control" formControlName="clientCode" id="clientCode" (ngModelChange)="getclientWarehouseRecords('clientCode')">
+                            <option value="">- Choose Client -</option>
+                            <option *ngFor="let item of clientCodeList; let i = index" [value]="item.clientCode" >
+                              {{item.clientName}}
+                            </option>cancelButtonAction
+                          </select>
+                        </div>
+
+                        <!--<div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label " for="title">Client Warehouse Code<span style="color:red">*</span></label>
+                          <select class="form-control" formControlName="clientWarehouseCode">
+                            <option value="">- Choose service type -</option>
+                            <option *ngFor="let item of clientWarehouseCodeList; let i = index" [value]="item.warehouseCode">
+                              {{item.warehouseName}}
+                            </option>
+                          </select>
+                        </div>-->
+
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label " for="title">Client Warehouse Code<span style="color:red">*</span></label>
+                          <select class="form-control" formControlName="clientWarehouseCode">
+                            <option value="">- Choose service type -</option>
+                            <option *ngFor="let item of clientWarehouseCodeList; let i = index" [value]="item.warehouseCode">
+                              {{item.warehouseName}}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label " for="title">Service Provider Code<span style="color:red">*</span></label>
+                          <select class="form-control" formControlName="serviceProviderCode">
+                            <option value="">- Choose service type -</option>
+                            <option *ngFor="let item of serviceProviderCodeList; let i = index" [value]="item.serviceProviderCode">
+                              {{item.serviceProviderName}}
+                            </option>
+                          </select>
+                        </div>
+
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" >Service Provider WarehouseCode<span style="color:red">*</span></label>
+                          <div *ngIf="updateClientCourierWarehouseMappingForm.controls['serviceProviderWarehouseCode'].touched && updateClientCourierWarehouseMappingForm.controls['serviceProviderWarehouseCode'].invalid" class="alert-danger">
+                            <div *ngIf="updateClientCourierWarehouseMappingForm.controls['serviceProviderWarehouseCode'].errors && updateClientCourierWarehouseMappingForm.controls['serviceProviderWarehouseCode'].errors.required">Service Provider Warehouse Code is required.</div></div>
+                          <input type="text" class="form-control"  formControlName="serviceProviderWarehouseCode" [(ngModel)]="singleRecord.serviceProviderWarehouseCode" value={{singleRecord.serviceProviderWarehouseCode}}>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" >Active</label>
+                          <input type="text" class="form-control" id="active" formControlName="active" [(ngModel)]="singleRecord.active" value={{singleRecord.active}}>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-offset-2 col-lg-9">
+                        <button type="submit" class="btn btn-primary">update</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="padd table-responsive" [hidden]="!isDisplayDataTable">
+              <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                     class=" table table-striped table-condensed table-bordered table-hover display dataTable"
+                     cellspacing="0" style="width:100%;">
+                <thead>
+                <tr class="text-center" style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                  <th>ID</th>
+                  <th>Client ID</th>
+                  <th>Client WareHouse ID</th>
+                  <th>Service Provider ID</th>
+                  <th>Service Provider WareHouse ID</th>
+                  <th>Active</th>
+                  <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of clientCourierWarehouseMappings">
+                  <td>{{ item.id }}</td>
+                  <td>{{ item.clientCode }}</td>
+                  <td>{{ item.clientWarehouseCode }}</td>
+                  <td>{{ item.serviceProviderCode }}</td>
+                  <td>{{ item.serviceProviderWarehouseCode }}</td>
+                  <td>{{ item.active }}</td>
+                  <td>
+                    &nbsp;<a href="javascript:;" (click)="updateRecords(item.id)"><i class="fa fa-pencil" title="Edit" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;<a href="javascript:;" (click)="deleteRecords(item.id)"><i class="fa fa-trash-o" title="Delete" aria-hidden="true"></i></a>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>

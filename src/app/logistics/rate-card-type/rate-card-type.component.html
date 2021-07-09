@@ -1,0 +1,145 @@
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <!--Loader start hear-->
+      <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" type = "ball-scale-multiple" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Rate Card Type&nbsp;&nbsp;
+              <BUTTON *ngIf="isDisplay" class="btn btn-primary" (click)="addNew()">Add  Record</BUTTON>
+            </div>
+
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+
+            <!--Add form start hear-->
+            <div class="padd" *ngIf="isAdd">
+              <div class="form quick-post">
+                <form class="form-horizontal" [formGroup]="rateCardTypeForm" (ngSubmit)="onSubmit()" >
+
+                  <div class="form-group">
+                    <div class="row">
+                      <label class="control-label col-lg-2" >Name<span style="color:red">*</span></label>
+                      <div class="col-lg-3">
+                        <div *ngIf="rateCardTypeForm.controls['typeName'].touched && rateCardTypeForm.controls['typeName'].invalid" class="alert-danger">
+                          <div *ngIf="rateCardTypeForm.controls['typeName'].errors && rateCardTypeForm.controls['typeName'].errors.required">Type Name is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="typeName">
+                      </div>
+                    </div><br>
+                    <!--</div>
+                    <div class="form-group">-->
+                    <div class="row">
+                      <label class="control-label col-lg-2" for="title">Code<span style="color:red">*</span></label>
+                      <div class="col-lg-3">
+                        <div *ngIf="rateCardTypeForm.controls['typeCode'].touched && rateCardTypeForm.controls['typeCode'].invalid" class="alert-danger">
+                          <div *ngIf="rateCardTypeForm.controls['typeCode'].errors && rateCardTypeForm.controls['typeCode'].errors.required">Type code is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="typeCode">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-9">
+                      <button type="submit" class="btn btn-primary"[disabled]="!rateCardTypeForm.valid">Save</button>&nbsp;&nbsp;&nbsp;
+                      <button type="reset" class="btn btn-default">Reset</button>&nbsp;&nbsp;&nbsp;
+                      <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                    </div>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+
+            <!--Update form start hear-->
+            <div class="padd" *ngIf="isUpdate">
+              <div class="form quick-post">
+                <form class="form-horizontal" [formGroup]="updateRateCardTypeForm" (ngSubmit)="onUpdateSubmit()">
+                  <div *ngIf="singleRecord.id">
+                    <div class="form-group">
+
+                      <!--Object id is hidden-->
+                      <div class="row">
+                        <input readonly type="hidden"  [(ngModel)]="singleRecord.id" formControlName="id" value={{singleRecord.id}}>
+                      </div><br>
+
+                      <div class="row">
+                        <label class="control-label col-lg-2" for="title">Name<span style="color:red">*</span></label>
+                        <div class="col-lg-3">
+                          <div *ngIf="updateRateCardTypeForm.controls['typeName'].touched && updateRateCardTypeForm.controls['typeName'].invalid" class="alert-danger">
+                            <div *ngIf="updateRateCardTypeForm.controls['typeName'].errors && updateRateCardTypeForm.controls['typeName'].errors.required">Type Name is required.</div></div>
+                          <input type="text" class="form-control" id="typeName" formControlName="typeName" [(ngModel)]="singleRecord.typeName" value={{singleRecord.typeName}}>
+                        </div>
+                      </div><br>
+                      <div class="row">
+                        <label class="control-label col-lg-2" for="title">Code<span style="color:red">*</span></label>
+                        <div class="col-lg-3">
+                          <div *ngIf="updateRateCardTypeForm.controls['typeCode'].touched && updateRateCardTypeForm.controls['typeCode'].invalid" class="alert-danger">
+                            <div *ngIf="updateRateCardTypeForm.controls['typeCode'].errors && updateRateCardTypeForm.controls['typeCode'].errors.required">Type Code is required.</div></div>
+                          <input readonly type="text" class="form-control" id="typeCode" formControlName="typeCode" [(ngModel)]="singleRecord.typeCode" value={{singleRecord.typeCode}}>
+                        </div>
+                      </div><br>
+                      <div class="row">
+                        <label class="control-label col-lg-2" for="title">Active<span style="color:red">*</span></label>
+                        <div class="col-lg-3">
+                          <div *ngIf="updateRateCardTypeForm.controls['active'].touched && updateRateCardTypeForm.controls['active'].invalid" class="alert-danger">
+                            <div *ngIf="updateRateCardTypeForm.controls['active'].errors && updateRateCardTypeForm.controls['active'].errors.required">Display Name is required.</div></div>
+                          <input type="text" class="form-control" id="active" formControlName="active" [(ngModel)]="singleRecord.active" value={{singleRecord.active}}>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <div class="col-lg-offset-2 col-lg-9">
+                        <button type="submit" class="btn btn-primary">update</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!--Table start hear-->
+            <div class="padd table-responsive" [hidden]="!isDisplay">
+              <table  datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                <thead>
+                <tr class="text-center" style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                  <th>ID</th>
+                  <th>Type Name</th>
+                  <th>Type Code</th>
+                  <th>Active</th>
+                  <th>Action</th>
+                  <!--<th>update</th>
+                  <th>delete</th>-->
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of rateCardType">
+                  <td>{{ item.id }}</td>
+                  <td>{{ item.typeName }}</td>
+                  <td>{{ item.typeCode }}</td>
+                  <td>{{ item.active }}</td>
+                  <td>
+                    <a href="javascript:;" (click)="updateRecords(item.id)"><i class="fa fa-pencil" title="Edit" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;<a href="javascript:;" (click)="deleteRecordById(item.id)"><i class="fa fa-trash-o" title="Delete" aria-hidden="true"></i></a>
+                  </td>
+                </tr>
+                <tr *ngIf="rateCardType?.length == 0">
+                  <td colspan="4" class="no-data-available">No data!</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+
+  </section>
+
+</section>

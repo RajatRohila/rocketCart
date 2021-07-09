@@ -1,0 +1,20 @@
+<div class="container">
+  <div class="card card-container" style="margin-top: 135px;">
+    <!--<img id="profile-img" class="profile-img-card" src="assets/img/courier-cart-logo.png" />-->
+    <p id="profile-name" class="profile-name-card"></p>
+    <form class="form-signin">
+      <span id="reauth-userId" class="reauth-userId"></span>
+      <input type="userId" id="inputUserId" class="form-control"  placeholder="User id" required autofocus (keyup)="handleKeyUp($event)">
+      <input type="password" id="inputPassword" class="form-control" placeholder="Password" required (keyup)="handleKeyUp($event)">
+      <div id="remember" class="checkbox">
+        <label>
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+      </div>
+      <button class="btn btn-lg btn-primary btn-block btn-signin" type="button" (click)="login()">Sign in</button>
+    </form><!-- /form -->
+    <!--<a href="#" class="forgot-password">
+      Forgot the password?
+    </a>-->
+  </div>
+</div>

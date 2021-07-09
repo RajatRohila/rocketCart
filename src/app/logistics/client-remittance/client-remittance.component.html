@@ -1,0 +1,210 @@
+
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <!--Loader start hear-->
+      <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" type = "ball-scale-multiple" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Client Remittance&nbsp;&nbsp;
+              <BUTTON *ngIf="isDisplay" class="btn btn-primary" (click)="addNew()">Add  Record</BUTTON>&nbsp;&nbsp;&nbsp;
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+          <div class="padd" *ngIf="isAdd">
+            <div class="form quick-post">
+              <form class="form-horizontal" [formGroup]="clientRemittanceForm">
+
+                <div class="form-group">
+                  <div class="row" style="margin: auto">
+                    <div class="col-lg-12">
+                      <label class="control-label" >PENDING REMITTANCE</label>
+                      <hr style="height:2px;border-width:0;color:gray;background-color:gray">
+                    </div>
+                  </div>
+                  <div class="row" style="margin: auto">
+                    <div class="col-lg-4 col-lg-offset-1">
+                      <label class="control-label col-lg-2" for="title">Client<span style="color:red">*</span></label>
+                      <select  class="form-control" id="clientCode" formControlName="clientCode">
+                        <option value="">- Choose Client -</option>
+                        <option  *ngFor="let item of clientList; let i = index" [value]="item.clientCode" >
+                          {{item.clientName}}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-lg-4"><br>
+                      <button type="submit" (click)="onDownload()" class="btn btn-primary">Download</button>&nbsp;&nbsp;&nbsp;
+                    </div>
+                  </div>
+
+                  <div class="row" style="margin: auto">
+                    <div class="col-lg-12" style="margin-top: 50px;">
+                      <label class="control-label" >APPLY SHIPMENTS FOR REMITTANCE</label>
+                      <hr style="height:2px;border-width:0;color:gray;background-color:gray">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-2 col-lg-offset-1"> <span style="color:green;">Total Records = {{responseBody.totalRecord}}</span> </div>
+                    <div class="col-lg-3"> <span style="color:red;">Error Records = {{responseBody.errorRecord}}</span></div>
+                    <div class="col-lg-4">
+                      <div class="row">
+                        <div class="col-lg-6"><button type="button" class="btn btn-danger" (click)="downloadErrorFile()">Download Error File</button></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!--Progress Bar start hear-->
+                  <br><div class="row" *ngIf="isUploadStart">
+                    <div class="col-lg-10 col-lg-offset-1">
+                      <div class="progress" style="height: 20px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" style="{{'width:' + uploadPresentage +'%'}}; height: 20px;"> {{uploadPresentage+'%'}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--Progress Bar end hear-->
+
+                  <div class="row">
+                    <div class="col-lg-offset-1 col-lg-4">
+                      <label class="control-label" for="title">Select File<span style="color:red">*</span></label>
+                      <input type="file" class="form-control" name="file" accept=".xlsx, .xls" (change)="onFileChange($event)">
+                    </div>
+                    <div class="col-lg-4"><br>
+                      <div class="row">
+                        <button type="submit" (click)="onGenerateRemittance()" class="btn btn-primary" [disabled]="isUploadButtonDisabled">APPLY</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                      </div>
+                    </div>
+                  </div>
+                  <!--<div class="row" style="margin: auto">
+                    <div class="col-lg-3 col-lg-offset-9">
+
+                    </div>
+                  </div>-->
+
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!--Update form start hear-->
+          <div class="padd" *ngIf="isUpdate">
+            <div class="form quick-post">
+              <form class="form-horizontal" [formGroup]="closeRemittanceForm" (ngSubmit)="onUpdateSubmit()">
+                <div *ngIf="singleRecord.id">
+                  <div class="form-group">
+                    <!--Object id  and remittanceNo is hidden-->
+                    <div class="row">
+                      <input readonly type="hidden"  [(ngModel)]="singleRecord.id" id="id" name="id" value={{singleRecord.id}}>
+                      <input readonly type="hidden"  [(ngModel)]="singleRecord.id" id="remittanceNo" name="remittanceNo" value={{singleRecord.remittanceNo}}>
+                    </div><br>
+
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" >Bank Nmae<span style="color:red">*</span></label>
+                        <input type="text" class="form-control"  id="bankName" name="bankName" formControlName="bankName">
+                      </div>
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" >Account No<span style="color:red">*</span></label>
+                        <input type="text" class="form-control"  id="accountNo" name="accountNo" formControlName="accountNo">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" >Transaction No<span style="color:red">*</span></label>
+                        <input type="text" class="form-control"  id="transactionNo" name="transactionNo" formControlName="transactionNo">
+                      </div>
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" >Deposited Amount<span style="color:red">*</span></label>
+                        <input type="text" class="form-control"  id="depositedAmt" name="depositedAmt" formControlName="depositedAmt"
+                               [(ngModel)]="singleRecord.collectedAmt" value={{singleRecord.collectedAmt}}>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="input-group">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" >Deposit Date<span style="color:red">*</span></label>
+                          <input class="form-control" placeholder="yyyy-mm-dd" formControlName="depositeDate" id="depositeDate" name="depositeDate" [(ngModel)]="model" ngbDatepicker
+                                 [footerTemplate]="footerTemplate" #d="ngbDatepicker" [minDate]="today" readonly>
+                          <div class="input-group-append">
+                            <button class="btn btn-outline-secondary calendar:active" style="width: 2.75rem; height: 2.75rem;
+                                    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAcCAYAAAAEN20fAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEUSURBVEiJ7ZQxToVAEIY/YCHGxN6XGOIpnpaEsBSeQC9ArZbm9TZ6ADyBNzAhQGGl8Riv4BLAWAgmkpBYkH1b8FWT2WK/zJ8ZJ4qiI6XUI3ANnGKWBnht2/ZBDRK3hgVGNsCd7/ui+JkEIrKtqurLpEWaphd933+IyI3LEIdpCYCiKD6HcuOa/nwOa0ScJEnk0BJg0UTUWJRl6RxCYEzEmomsIlPU3IPW+grIAbquy+q6fluy/28RIBeRMwDXdXMgXLj/B2uimRXpui4D9sBeRLKl+1N+L+t6RwbWrZliTTTr1oxYtzVWiTQAcRxvTX+eJMnlUDaO1vpZRO5NS0x48sIwfPc87xg4B04MCzQi8hIEwe4bl1DnFMCN2zsAAAAASUVORK5CYII=') !important;
+                                    background-repeat: no-repeat;
+                                    background-size: 40px;
+                                    background-position: center;" (click)="d.toggle()"></button>
+                            <ng-template #footerTemplate>
+                              <hr class="my-0">
+                              <button class="btn btn-primary btn-sm m-2 float-left" (click)="model = today; d.close()">Today</button>
+                              <button class="btn btn-secondary btn-sm m-2 float-right" (click)="d.close()">Close</button>
+                            </ng-template>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-lg-offset-1 col-lg-4">
+                        <label class="control-label" for="title">Deposit Slip<span style="color:red">*</span></label>
+                        <input type="file" class="form-control" id="file" name="file" (change)="oncloseRemittanceFileChange($event)">
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-9">
+                      <button type="submit" class="btn btn-primary">update</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                      <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+
+
+          <!--Table start hear-->
+          <div class="padd table-responsive" [hidden]="!isDisplay">
+            <table  datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+              <thead>
+              <tr class="text-center" style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                <th>REMITTANCE No</th>
+                <th>DATE</th>
+                <th>CLIENT NAME</th>
+                <th>COLLECTED AMOUNT</th>
+                <th>STATUS</th>
+                <th>TOTAL SHIPMENTS</th>
+                <th>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let item of clientRemittance">
+                <td>{{ item.remittanceNo }}</td>
+                <td>{{ item.date| date:'yyyy-MM-dd hh:MM:ss' }}</td>
+                <td>{{ item.clientCode }}</td>
+                <td>{{ item.collectedAmt }}</td>
+                <td>{{ item.status.statusName}}</td>
+                <td>{{ item.totalShipment }}</td>
+                <td>
+                  <a href="javascript:;" (click)="updateRecords(item.id)"><i class="fa fa-pencil" title="Edit" aria-hidden="true"></i></a>&nbsp;&nbsp;
+                  <a href="javascript:;" (click)="downloadClientRemittanceReport(item.remittanceNo)"><span><i class="fa fa-print" title="Dowload report" aria-hidden="true"></i></span></a>&nbsp;&nbsp;
+                  <a href="javascript:;" (click)="deleteRecordById(item.id)"><i class="fa fa-trash-o" title="Delete" aria-hidden="true"></i></a>
+                </td>
+              </tr>
+              <tr *ngIf="clientRemittance?.length == 0">
+                <td colspan="4" class="no-data-available">No data!</td>
+              </tr>
+              </tbody>
+            </table>
+           </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</section>

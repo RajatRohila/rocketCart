@@ -1,0 +1,157 @@
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <!--Loader start hear-->
+      <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" type = "ball-scale-multiple" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Serviceable Courier &nbsp;&nbsp;&nbsp;
+              <!--<button *ngIf="isDisplay" class="btn btn-default"> <a href="#"  (click)="addNew()">Add  Record</a></button>-->&nbsp;
+              <!-- <button *ngIf="isFirst" class="btn btn-default"> <a href="#" (click)="addNew()">Add  Record</a></button>&nbsp;-->
+              <!-- <button *ngIf="isAdd" class="btn btn-default"> <a href="#" (click)="showRecords()">Show  Records</a></button>-->
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <!--Add form start hear-->
+            <!-- <div class="padd" *ngIf="isAdd">-->
+            <div class="form quick-post">
+              <form class="form-horizontal" [formGroup]="serviceablecourierForm" (ngSubmit)="onCalculate()">
+                <div class="form-group">
+                  <div class="row" style="margin: auto">
+                    <div class="col-lg-4">
+                      <label class="control-label " for="title">Client ID<span style="color:red">*</span></label>
+                      <select class="form-control" formControlName="clientCode">
+                        <option value="">- Choose Client -</option>
+                        <option *ngFor="let item of clientList; let i = index" [value]="item.clientCode">
+                          {{item.clientCode}}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-lg-4">
+                      <label class="control-label">Payment Type<span style="color:red">*</span></label>
+                      <select class="form-control" formControlName="paymentType">
+                        <option value="">- Choose Payment Type -</option>
+                        <option [ngValue]="payment" *ngFor="let payment of paymentTypeList">{{payment}}</option>
+                      </select>
+                    </div>
+                    <div class="col-lg-4">
+                      <label class="control-label">Pickup Pincode<span style="color:red">*</span></label>
+                      <div *ngIf="serviceablecourierForm.controls['sourcePincode'].touched && serviceablecourierForm.controls['sourcePincode'].invalid" class="alert-danger">
+                        <div *ngIf="serviceablecourierForm.controls['sourcePincode'].errors && serviceablecourierForm.controls['sourcePincode'].errors.required">Destination Pincode is required.</div>
+                        <div *ngIf="serviceablecourierForm.controls['sourcePincode'].errors.pattern || serviceablecourierForm.controls['sourcePincode'].errors.maxlength || serviceablecourierForm.controls['sourcePincode'].errors.minlength">Destination Pincode must be at least 6 numbers</div>
+                      </div>
+                      <input type="text" class="form-control" formControlName="sourcePincode" (keypress)="keyPress($event)">
+                    </div>
+                  </div>
+                  <div class="row" style="margin: auto">
+                    <div class="col-lg-4">
+                      <label class="control-label">Delivery Pincode<span style="color:red">*</span></label>
+                      <div *ngIf="serviceablecourierForm.controls['destinationPincode'].touched && serviceablecourierForm.controls['destinationPincode'].invalid" class="alert-danger">
+                        <div *ngIf="serviceablecourierForm.controls['destinationPincode'].errors && serviceablecourierForm.controls['destinationPincode'].errors.required">Destination Pincode is required.</div>
+                        <div *ngIf="serviceablecourierForm.controls['destinationPincode'].errors.pattern || serviceablecourierForm.controls['destinationPincode'].errors.maxlength || serviceablecourierForm.controls['destinationPincode'].errors.minlength">Destination Pincode must be at least 6 numbers</div>
+                      </div>
+                      <!--<div
+                        *ngIf="serviceablecourierForm.controls['destinationPincode'].touched && serviceablecourierForm.controls['destinationPincode'].invalid"
+                        class="alert-danger">
+                        <div
+                          *ngIf="serviceablecourierForm.controls['destinationPincode'].errors && serviceablecourierForm.controls['destinationPincode'].errors.required">
+                          Destination Pincode is required.
+                        </div>
+                      </div>-->
+                      <input type="text" class="form-control" formControlName="destinationPincode" (keypress)="keyPress($event)">
+                    </div>
+                    <div class="col-lg-4">
+                      <label class="control-label">Weight(KG)<span style="color:red">*</span></label>
+                      <div
+                        *ngIf="serviceablecourierForm.controls['weight'].touched && serviceablecourierForm.controls['weight'].invalid"
+                        class="alert-danger">
+                        <div
+                          *ngIf="serviceablecourierForm.controls['weight'].errors && serviceablecourierForm.controls['weight'].errors.required">
+                          Weight is required.
+                        </div>
+                      </div>
+                      <input type="text" class="form-control" formControlName="weight">
+                    </div>
+                    <div class="col-lg-4">
+                      <label class="control-label">Length(CM)</label>
+                      <input type="text" class="form-control" formControlName="length">
+                    </div>
+                  </div>
+                  <div class="row" style="margin: auto">
+                    <div class="col-lg-4">
+                      <label class="control-label">Breadth(CM)</label>
+                      <input type="text" class="form-control" formControlName="breadth">
+                    </div>
+                    <div class="col-lg-4">
+                      <label class="control-label">Height(CM)</label>
+                      <input type="text" class="form-control" formControlName="height">
+                    </div>
+                    <div class="col-lg-4">
+                      <label class="control-label">Product Price</label>
+                      <input type="text" class="form-control" formControlName="codAmount">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-offset-5 col-lg-5">
+                    <button type="submit" class="btn btn-primary" [disabled]="!serviceablecourierForm.valid">CALCULATE
+                    </button>&nbsp;&nbsp;&nbsp;
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="padd table-responsive" *ngIf="isDisplay">
+            <div class="panel-body">
+              <!--Add form start hear-->
+              <!-- <div class="padd" *ngIf="isAdd">-->
+              <div class="form-group">
+                <div class="row" style="margin: auto" *ngFor="let serviceCourier of serviceableCouriersResponse | keyvalue;let i = index">
+                  <div class="col-lg-6">
+                    <label class="control-label"><h1>{{ serviceCourier.key }} service</h1></label>
+                    <table class=" table table-striped table-condensed table-bordered table-hover display dataTable"
+                           cellspacing="0" style="width:100%;">
+                      <thead>
+                      <tr class="text-center" style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                        <th>Courier</th>
+                        <th>Service Charge</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let item of serviceCourier.value">
+                        <td>{{item.courierCode}}</td>
+                        <td>{{item.serviceCharge}}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!--<div class="col-lg-6" *ngIf="i%2==1">
+                    <label class="control-label"><h1>{{ serviceCourier.key }} service</h1></label>
+                    <table class=" table table-striped table-condensed table-bordered table-hover display dataTable"
+                           cellspacing="0" style="width:100%;">
+                      <thead>
+                      <tr class="text-center" style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                        <th>Courier</th>
+                        <th>Service charge</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let item of serviceCourier.value">
+                        <td>{{item.courierCode}}</td>
+                        <td>{{item.serviceCharge}}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>-->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>

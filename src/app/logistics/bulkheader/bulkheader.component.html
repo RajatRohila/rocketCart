@@ -1,0 +1,147 @@
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <!--Loader start hear-->
+      <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" type = "ball-scale-multiple" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Bulk Header&nbsp;&nbsp;
+              <BUTTON *ngIf="isDisplay" class="btn btn-primary" (click)="addNew()">Add  Record</BUTTON>
+             <!-- <button *ngIf="isFirst" class="btn btn-default"> <a href="#" (click)="addNew()">Add  Record</a></button>&nbsp;-->
+             <!-- <button *ngIf="isAdd" class="btn btn-default"> <a href="#" (click)="showRecords()">Show  Records</a></button>-->
+            </div>
+
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+
+            <!--Add form start hear-->
+            <div class="padd" *ngIf="isAdd">
+              <div class="form quick-post">
+                <form class="form-horizontal" [formGroup]="bulkHeaderForm" (ngSubmit)="onSubmit()" >
+
+                  <div class="form-group">
+                    <div class="row">
+                      <label class="control-label col-lg-2" >Display Name<span style="color:red">*</span></label>
+                      <div class="col-lg-3">
+                        <div *ngIf="bulkHeaderForm.controls['displayName'].touched && bulkHeaderForm.controls['displayName'].invalid" class="alert-danger">
+                        <div *ngIf="bulkHeaderForm.controls['displayName'].errors && bulkHeaderForm.controls['displayName'].errors.required">Display Name is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="displayName">
+                      </div>
+                    </div><br>
+                  <!--</div>
+                  <div class="form-group">-->
+                    <div class="row">
+                      <label class="control-label col-lg-2" for="title">Header Code<span style="color:red">*</span></label>
+                      <div class="col-lg-3">
+                        <div *ngIf="bulkHeaderForm.controls['headerCode'].touched && bulkHeaderForm.controls['headerCode'].invalid" class="alert-danger">
+                        <div *ngIf="bulkHeaderForm.controls['headerCode'].errors && bulkHeaderForm.controls['headerCode'].errors.required">HeaderCode is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="headerCode">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-9">
+                      <button type="submit" class="btn btn-primary"[disabled]="!bulkHeaderForm.valid">Save</button>&nbsp;&nbsp;&nbsp;
+                      <button type="reset" class="btn btn-default">Reset</button>&nbsp;&nbsp;&nbsp;
+                      <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                    </div>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+
+            <!--Update form start hear-->
+            <div class="padd" *ngIf="isUpdate">
+              <div class="form quick-post">
+                <form class="form-horizontal" [formGroup]="updateBulkHeaderForm" (ngSubmit)="onUpdateSubmit()">
+                  <div *ngIf="singleRecord.id">
+                    <div class="form-group">
+
+                      <!--Object id is hidden-->
+                      <div class="row">
+                        <input readonly type="hidden"  [(ngModel)]="singleRecord.id" formControlName="id" value={{singleRecord.id}}>
+                      </div><br>
+
+                      <div class="row">
+                        <label class="control-label col-lg-2" for="title">Display Name<span style="color:red">*</span></label>
+                        <div class="col-lg-3">
+                          <div *ngIf="updateBulkHeaderForm.controls['displayName'].touched && updateBulkHeaderForm.controls['displayName'].invalid" class="alert-danger">
+                            <div *ngIf="updateBulkHeaderForm.controls['displayName'].errors && updateBulkHeaderForm.controls['displayName'].errors.required">Display Name is required.</div></div>
+                          <input type="text" class="form-control" id="displayName" formControlName="displayName" [(ngModel)]="singleRecord.displayName" value={{singleRecord.displayName}}>
+                        </div>
+                      </div><br>
+                      <div class="row">
+                        <label class="control-label col-lg-2" for="title">HeaderCode<span style="color:red">*</span></label>
+                        <div class="col-lg-3">
+                          <div *ngIf="updateBulkHeaderForm.controls['headerCode'].touched && updateBulkHeaderForm.controls['headerCode'].invalid" class="alert-danger">
+                            <div *ngIf="updateBulkHeaderForm.controls['headerCode'].errors && updateBulkHeaderForm.controls['headerCode'].errors.required">HeaderCode is required.</div></div>
+                          <input readonly type="text" class="form-control" id="headerCode" formControlName="headerCode" [(ngModel)]="singleRecord.headerCode" value={{singleRecord.headerCode}}>
+                        </div>
+                      </div><br>
+                      <div class="row">
+                        <label class="control-label col-lg-2" for="title">Active<span style="color:red">*</span></label>
+                        <div class="col-lg-3">
+                          <div *ngIf="updateBulkHeaderForm.controls['active'].touched && updateBulkHeaderForm.controls['active'].invalid" class="alert-danger">
+                            <div *ngIf="updateBulkHeaderForm.controls['active'].errors && updateBulkHeaderForm.controls['active'].errors.required">Display Name is required.</div></div>
+                          <input type="text" class="form-control" id="active" formControlName="active" [(ngModel)]="singleRecord.active" value={{singleRecord.active}}>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <div class="col-lg-offset-2 col-lg-9">
+                        <button type="submit" class="btn btn-primary">update</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                      </div>
+                    </div>
+                    </div>
+                </form>
+              </div>
+            </div>
+
+            <!--Table start hear-->
+          <div class="padd table-responsive" [hidden]="!isDisplay">
+              <table  datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                <thead>
+                <tr class="text-center" style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                  <th>ID</th>
+                  <th>Display Name</th>
+                  <th>Header Code</th>
+                  <th>Active</th>
+                  <th>Action</th>
+                  <!--<th>update</th>
+                  <th>delete</th>-->
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of bulkHeaders">
+                  <td>{{ item.id }}</td>
+                  <td>{{ item.displayName }}</td>
+                  <td>{{ item.headerCode }}</td>
+                  <td>{{ item.active }}</td>
+                  <td>
+                    <a href="javascript:;" (click)="updateRecords(item.id)"><i class="fa fa-pencil" title="Edit" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;<a href="javascript:;" (click)="deleteRecordById(item.id)"><i class="fa fa-trash-o" title="Delete" aria-hidden="true"></i></a>
+                  </td>
+                </tr>
+                <tr *ngIf="bulkHeaders?.length == 0">
+                  <td colspan="4" class="no-data-available">No data!</td>
+                </tr>
+                </tbody>
+              </table>
+      </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+
+  </section>
+
+</section>

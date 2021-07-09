@@ -1,0 +1,194 @@
+<p>configration works!</p>
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <!--Loader start hear-->
+      <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" type = "ball-scale-multiple" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Configuration
+              <BUTTON *ngIf="isDisplay" class="btn btn-primary" (click)="addNew()">Add Record</BUTTON>
+              <!--<button *ngIf="isDisplay" class="btn btn-default"> <a href="#"  (click)="addNew()">Add  Record</a></button>&nbsp;-->
+              <!-- <button *ngIf="isFirst" class="btn btn-default"> <a href="#" (click)="addNew()">Add  Record</a></button>&nbsp;-->
+              <!-- <button *ngIf="isAdd" class="btn btn-default"> <a href="#" (click)="showRecords()">Show  Records</a></button>-->
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <!--Add form start hear-->
+            <div class="padd" *ngIf="isAdd">
+              <div class="form quick-post">
+                <form class="form-horizontal" [formGroup]="configrationForm" (ngSubmit)="onSubmit()" >
+                  <div class="form-group">
+                    <div class="row">
+                      <label class="control-label col-lg-2"for="title">Configuration Type<span style="color:red">*</span></label>
+                      <div class="col-lg-3">
+                        <div *ngIf="configrationForm.controls['configType'].touched && configrationForm.controls['configType'].invalid" class="alert-danger">
+                          <div *ngIf="configrationForm.controls['configType'].errors && configrationForm.controls['configType'].errors.required">configType is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="configType">
+                      </div>
+                    </div><br>
+                    <div class="row">
+                      <label class="control-label col-lg-2" for="title">Configuration Value<span style="color:red">*</span></label>
+                      <div class="col-lg-3">
+                        <div *ngIf="configrationForm.controls['configValue'].touched && configrationForm.controls['configValue'].invalid" class="alert-danger">
+                          <div *ngIf="configrationForm.controls['configValue'].errors && configrationForm.controls['configValue'].errors.required">Status Code is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="configValue">
+                      </div>
+                    </div><br>
+                    <div class="row">
+                      <label class="control-label col-lg-2" for="title">Configuration ID<span style="color:red">*</span></label>
+                      <div class="col-lg-3">
+                        <div *ngIf="configrationForm.controls['configCode'].touched && configrationForm.controls['configCode'].invalid" class="alert-danger">
+                          <div *ngIf="configrationForm.controls['configCode'].errors && configrationForm.controls['configCode'].errors.required">configCode is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="configCode">
+                      </div>
+                    </div><br>
+                    <!--</div>
+                    <div class="form-group">-->
+                    <div class="row">
+                      <label class="control-label col-lg-2" for="title">Description</label>
+                      <div class="col-lg-3">
+                        <input type="text" class="form-control"  formControlName="discription">
+                      </div>
+                    </div><br>
+                    <div class="row">
+                      <label class="control-label col-lg-2" for="title">Extra1</label>
+                      <div class="col-lg-3">
+                        <input type="text" class="form-control"  formControlName="extra1">
+                      </div>
+                    </div><br>
+                    <div class="row">
+                      <label class="control-label col-lg-2" for="title">Extra2</label>
+                      <div class="col-lg-3">
+                        <input type="text" class="form-control"  formControlName="extra2">
+                      </div>
+                    </div><br>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-9">
+                      <button type="submit" class="btn btn-primary"[disabled]="!configrationForm.valid">Save</button>&nbsp;&nbsp;&nbsp;
+                      <button type="reset" class="btn btn-default">Reset</button>&nbsp;&nbsp;&nbsp;
+                      <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!--Update form start hear-->
+            <div class="padd" *ngIf="isUpdate">
+              <div class="form quick-post">
+                <form class="form-horizontal" [formGroup]="updateConfigrationForm" (ngSubmit)="onUpdateSubmit()">
+                  <div *ngIf="singleRecord.id">
+                    <div class="form-group">
+                      <!--Object id is hidden-->
+                      <div class="row">
+                        <input readonly type="hidden"  [(ngModel)]="singleRecord.id" formControlName="id" value={{singleRecord.id}}>
+                      </div><br>
+                      <div class="row">
+                        <label class="control-label col-lg-2" for="title"> Config Type<span style="color:red">*</span></label>
+                        <div class="col-lg-3">
+                          <input type="text" class="form-control" formControlName="configType" [(ngModel)]="singleRecord.configType" value={{singleRecord.configType}}>
+                        </div>
+                        <div class="col-lg-3">
+                          <div *ngIf="updateConfigrationForm.controls['configType'].touched && updateConfigrationForm.controls['configType'].invalid" class="alert-danger">
+                            <div *ngIf="updateConfigrationForm.controls['configType'].errors && updateConfigrationForm.controls['configType'].errors.required">configType is required.</div></div>
+                        </div>
+                      </div><br>
+                      <div class="row">
+                        <label class="control-label col-lg-2" for="title"> Config Value<span style="color:red">*</span></label>
+                        <div class="col-lg-3">
+                          <input type="text" class="form-control" formControlName="configValue" [(ngModel)]="singleRecord.configValue" value={{singleRecord.configValue}}>
+                        </div>
+                        <div class="col-lg-3">
+                          <div *ngIf="updateConfigrationForm.controls['configValue'].touched && updateConfigrationForm.controls['configValue'].invalid" class="alert-danger">
+                            <div *ngIf="updateConfigrationForm.controls['configValue'].errors && updateConfigrationForm.controls['configValue'].errors.required">configValue is required.</div></div>
+                        </div>
+                      </div><br>
+                      <div class="row">
+                        <label class="control-label col-lg-2" for="title"> Config Id<span style="color:red">*</span></label>
+                        <div class="col-lg-3">
+                          <input readonly type="text" class="form-control" formControlName="configCode" [(ngModel)]="singleRecord.configCode" value={{singleRecord.configCode}}>
+                        </div>
+                        <div class="col-lg-3">
+                          <div *ngIf="updateConfigrationForm.controls['configCode'].touched && updateConfigrationForm.controls['configCode'].invalid" class="alert-danger">
+                            <div *ngIf="updateConfigrationForm.controls['configCode'].errors && updateConfigrationForm.controls['configCode'].errors.required">configCode is required.</div></div>
+                        </div>
+                      </div><br>
+                      <!--</div>
+                      <div class="form-group">-->
+                      <div class="row">
+                        <label class="control-label col-lg-2" for="title">Discription</label>
+                        <div class="col-lg-3">
+                          <input type="text" class="form-control" formControlName="discription" [(ngModel)]="singleRecord.discription" value={{singleRecord.discription}}>
+                        </div>
+                      </div><br>
+                      <div class="row">
+                        <label class="control-label col-lg-2" for="title"> Extra1</label>
+                        <div class="col-lg-3">
+                          <input type="text" class="form-control" formControlName="extra1" [(ngModel)]="singleRecord.extra1" value={{singleRecord.extra1}}>
+                        </div>
+                      </div><br>
+                      <div class="row">
+                        <label class="control-label col-lg-2" for="title"> Extra2</label>
+                        <div class="col-lg-3">
+                          <input type="text" class="form-control" formControlName="extra2" [(ngModel)]="singleRecord.extra2" value={{singleRecord.extra2}}>
+                        </div>
+                      </div><br>
+                      <div class="row">
+                        <label class="control-label col-lg-2" for="title">Active<span style="color:red">*</span></label>
+                        <div class="col-lg-3">
+                          <div *ngIf="updateConfigrationForm.controls['active'].touched && updateConfigrationForm.controls['active'].invalid" class="alert-danger">
+                            <div *ngIf="updateConfigrationForm.controls['active'].errors && updateConfigrationForm.controls['active'].errors.required">Active is required.</div></div>
+                          <input type="text" class="form-control" id="active" formControlName="active" [(ngModel)]="singleRecord.active" value={{singleRecord.active}}>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-lg-offset-2 col-lg-9">
+                          <button type="submit" class="btn btn-primary">update</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                          <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!--Table start hear-->
+            <div class="padd table-responsive" [hidden]="!isDisplay">
+              <table  datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                <thead>
+                <tr class="text-center" style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                  <th>ID</th>
+                  <th>Config Type</th>
+                  <th>Config Value</th>
+                  <th>Config Id</th>
+                  <th>Discription</th>
+                  <th>Active</th>
+                  <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of configrations">
+                  <td>{{ item.id }}</td>
+                  <td>{{ item.configType}}</td>
+                  <td>{{ item.configValue}}</td>
+                  <td>{{ item.configCode }}</td>
+                  <td>{{ item.discription }}</td>
+                  <td>{{ item.active }}</td>
+                  <td>
+                    <a href="javascript:;" (click)="updateRecords(item.id)"><i class="fa fa-pencil" title="Edit" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;<a href="javascript:;" (click)="deleteRecords(item.id)"><i class="fa fa-trash-o" title="Delete" aria-hidden="true"></i></a>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>

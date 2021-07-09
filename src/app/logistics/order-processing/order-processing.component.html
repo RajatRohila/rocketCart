@@ -1,0 +1,389 @@
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <!--Loader start hear-->
+      <div *ngIf="loaderVisible">
+        <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" type = "ball-scale-multiple" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+      </div>
+      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="card-body no-padding">
+              <div role="tabpanel">
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active"><a href="#ORDER-RECEIVED" aria-controls="ORDER-RECEIVED" role="tab" data-toggle="tab" aria-expanded="false" target="_self"  id="orderReceived">Order Received</a></li>
+                  <li role="presentation" class=""><a href="#ORDER-PROCESS"  (click)="loadOrderProcessDataTable()" aria-controls="ORDER-PROCESS" role="tab" data-toggle="tab" aria-expanded="false" target="_self" id="orderProcess">Order Process</a></li>
+                  <li role="presentation" class=""><a href="#ORDER-ASSIGNED" (click)="loadOrderAssignedDataTable()" aria-controls="ORDER-ASSIGNED" role="tab" data-toggle="tab" aria-expanded="false" target="_self" id="orderAssigned">Order Assigned</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div role="tabpanel" class="tab-pane active" id="ORDER-RECEIVED">
+                    <div class="padd">
+                      <div class="row">
+                        <div class="col-lg-offset-2"><br>&nbsp;&nbsp;
+                          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#assigneeCourierBulkModel" style="background-color: green" (click)="getServiceProviderForBulk()">Ship Courier in Bulk</button>&nbsp;&nbsp;
+                          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#assigneeCourierByPriorityModel" style="background-color: green" (click)="getServiceProviderForBulk()">Ship Courier Priority Wise</button>&nbsp;&nbsp;
+                          <button type="button" (click)="onDownloadOrderReceivedReport()" class="btn btn btn-primary" style="background-color: green">Download Report</button>&nbsp;&nbsp;
+
+                          <button type="button" (click)="orderCancellation()" class="btn btn btn-primary" style="background-color: green">Cancel Order </button>&nbsp;&nbsp;
+                        </div>
+                      </div>
+                    <div class="table-responsive">
+                      <table  datatable [dtOptions]="orderReceivedDataTableSetting" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                        <thead>
+                        <tr class="text-center" style="background-color: #2f3e4c; color: #ffffff; height: 40px;">
+                          <!--<th style="visibility:hidden;">Id</th>-->
+                          <th><input type="checkbox" [checked]="isAllCheckBoxChecked()" (change)="checkAllCheckBox($event)"></th>
+                          <th>CCT-AWB</th>
+                          <th>ORDER-ID</th>
+                          <th>ORDER-DATE</th>
+                          <th>USER-NAME</th>
+                          <th>PICKUP-LOCATION-ID</th>
+                          <th>CLIENT</th>
+                          <th>PRODUCT</th>
+                          <th>PAYMENT-TYPE/PRODUCT-PRICE</th>
+                          <th>WEIGHT/LBH</th>
+                          <th>SENDER</th>
+                          <th>CONSIGNEE</th>
+                          <th>STATUS</th>
+                          <th>SELECT COURIER</th>
+                          <th>ACTION</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let item of orderReceivedArray; let i=index; let odd = odd" [ngClass]="odd ? 'odd_col' : 'even_col' ">
+                         <!-- <td style="visibility:hidden;">{{ item.id}}</td>-->
+                          <td style="width: 14px"><input type="checkbox" value="{{checkBoxObjArray[i].value}}" [(ngModel)]="checkBoxObjArray[i].checked"><span class="checkBoxCustomCss"></span></td>
+                          <td>{{ item.referanceNo }}</td>
+                          <td>{{ item.clientOrderId }}</td>
+                          <td>{{item.orderDate | date:'yyyy-MM-dd hh:mm:ss' }}</td>
+                          <td>{{ item.packetHistory[0].createdByCode }}</td>
+                          <!--<td>{{item.pickupLocationId}}/{{item.pickupLocation}}</td>-->
+                          <td>{{item.pickupLocation}}</td>
+                          <td>{{item.clientCode}}</td>
+                          <td>{{item.productName}}</td>
+                          <td>{{ item.paymentType}} <span style="color:green;font-weight:bold">Rs-{{ item.productPrice}}</span></td>
+                          <td>{{item.weight}}-Kg/{{item.length}},{{item.breadth}},{{item.hight}}</td>
+                          <td>{{item.senderName}}</td>
+                          <td>{{item.consigneeName}}</td>
+                          <td>{{ item.currentStatus.statusName }}</td>
+                          <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#assigneeCourierModel" style="background-color: green" (click)="selectAwbAShipNow(item.referanceNo)">Ship Now</button></td>
+                          <!--<td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#assigneeCourierModel" style="background-color: green" (click)="selectCourier(item.referanceNo)">Ship Now</button></td>-->
+                          <td>
+                            <a href="javascript:;" (click)="printInvoice(item.referanceNo)"><span><i class="fa fa-print" title="Print-invoice" aria-hidden="true"></i></span></a>
+                          </td>
+                        </tr>
+                        </tbody>
+                      </table>
+                     </div>
+                    </div>
+                  </div>
+
+                  <div role="tabpanel" class="tab-pane" id="ORDER-PROCESS">
+                    <div class="padd">
+                      <div class="row">
+                        <div class="col-lg-offset-2"><br>&nbsp;&nbsp;
+                          <button type="button" (click)="onDownloadOrderProcessReport()" class="btn btn-primary" style="background-color: green">Download Report</button>
+                        </div>
+                      </div>
+                      <div class="table-responsive">
+                        <table datatable [dtOptions]="orderProcessDataTableSetting" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                          <thead>
+                          <tr class="text-center" style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                            <th>CCT-AWB</th>
+                            <th>ORDER-ID</th>
+                            <th>ORDER-DATE</th>
+                            <th>USER-NAME</th>
+                            <th>PICKUP-LOCATION/ID</th>
+                            <th>CLIENT</th>
+                            <th>PRODUCT</th>
+                            <th>PAYMENT-TYPE/PRODUCT-PRICE</th>
+                            <th>WEIGHT/LBH</th>
+                            <th>SENDER</th>
+                            <th>CONSIGNEE</th>
+                            <th>STATUS</th>
+                            <th>SELECTED-COURIER</th>
+                            <th>ACTION</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let item of orderProcessArray; let i=index; let odd = odd" [ngClass]="odd ? 'odd_col' : 'even_col' ">
+                            <td>{{ item.referanceNo }}</td>
+                            <td>{{ item.clientOrderId }}</td>
+                            <td>{{item.orderDate | date:'yyyy-MM-dd hh:mm:ss' }}</td>
+                            <td>{{ item.packetHistory[0].createdByCode }}</td>
+                            <td>{{item.pickupLocationId}} / {{item.pickupLocation}}</td>
+                            <td>{{item.clientCode}}</td>
+                            <td>{{item.productName}}</td>
+                            <td>{{ item.paymentType}} <span style="color:green;font-weight:bold">Rs-{{ item.productPrice}}</span></td>
+                            <td>{{item.weight}}-Kg/{{item.length}},{{item.breadth}},{{item.hight}}</td>
+                            <td>{{item.senderName}}</td>
+                            <td>{{item.consigneeName}}</td>
+                            <td>{{ item.currentStatus.statusName }}</td>
+                            <td>{{item.courierCode}}</td>
+                            <td>
+                              <a href="javascript:;" (click)="printInvoice(item.referanceNo)"><span><i class="fa fa-print" title="Print-invoice" aria-hidden="true"></i></span></a>
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div role="tabpanel" class="tab-pane" id="ORDER-ASSIGNED">
+                    <div class="padd">
+                      <div class="row">
+                        <div class="col-lg-offset-2"><br>&nbsp;&nbsp;
+                          <button type="button" class="btn btn-primary"(click)="onDownloadOrderAssignedReport()" style="background-color: green">Download Report</button>&nbsp;&nbsp;
+                          <button type="button" (click)="downloadLableBulk()" class="btn btn btn-primary" style="background-color: green">Download Lebel</button>&nbsp;&nbsp;
+                          <button type="button" (click)="downloadInvoiceBulk()" class="btn btn btn-primary" style="background-color: green">Download Invoice</button>
+                        </div>
+                      </div>
+                      <div class="table-responsive">
+                        <table  datatable [dtOptions]="orderAssignedDataTableSetting" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                          <thead>
+                          <tr class="text-center" style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                            <th><input type="checkbox" [checked]="isAllCheckBoxChecked()" (change)="checkAllCheckBox($event)"></th>
+                            <th>CCT-AWB</th>
+                            <th>ORDER-ID</th>
+                            <th>ORDER-DATE</th>
+                            <th>USER-NAME</th>
+                            <th>PICKUP-LOCATION/ID</th>
+                            <th>CLIENT</th>
+                            <th>PRODUCT</th>
+                            <th>PAYMENT-TYPE/PRODUCT PRICE</th>
+                            <th>WEIGHT/LBH</th>
+                            <th>SENDER</th>
+                            <th>CONSIGNEE</th>
+                            <th>STATUS</th>
+                            <th>ASSIGNED-COURIER</th>
+                            <th>COURIER-AWB</th>
+                            <th>ACTION</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let item of orderAssignedArray; let i=index; let odd = odd" [ngClass]="odd ? 'odd_col' : 'even_col' ">
+                            <!-- <td style="visibility:hidden;">{{ item.id}}</td>-->
+                            <td style="width: 14px"><input type="checkbox" value="{{orderAssignedCheckBoxObjArray[i].value}}" [(ngModel)]="orderAssignedCheckBoxObjArray[i].checked"><span class="checkBoxCustomCss"></span></td>
+                            <td>{{ item.referanceNo }}</td>
+                            <td>{{ item.clientOrderId }}</td>
+                            <td>{{item.orderDate | date:'yyyy-MM-dd hh:mm:ss' }}</td>
+                            <td>{{ item.packetHistory[0].createdByCode }}</td>
+                            <td>{{item.pickupLocationId}} / {{item.pickupLocation}}</td>
+                            <td>{{item.clientCode}}</td>
+                            <td>{{item.productName}}</td>
+                            <td>{{ item.paymentType}} <span style="color:green;font-weight:bold">Rs-{{ item.productPrice}}</span></td>
+                            <td>{{item.weight}}-Kg/{{item.length}},{{item.breadth}},{{item.hight}}</td>
+                            <td>{{item.senderName}}</td>
+                            <td>{{item.consigneeName}}</td>
+                            <td>{{ item.currentStatus.statusName }}</td>
+                            <td>{{item.courierCode}}</td>
+                            <td>{{item.courierAWBNumber}}</td>
+                            <td>
+                              <a href="javascript:;" (click)="printInvoice(item.referanceNo)"><span><i class="fa fa-print" title="Print-invoice" aria-hidden="true"></i></span></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                              <a href="javascript:;" (click)="printLabel(item.referanceNo)"><span><i class="fa fa-print" title="Print-label" aria-hidden="true"></i></span></a>
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <!--Model popup start hear-->
+                <div class="row">
+                  <!-- MODAL -->
+                  <div class="modal" id="assigneeCourierModel" >
+                    <div class="modal-dialog modal-lg" style="left: auto; margin-top: 43px;">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Select Courier</h5>
+                          <button class="close" data-dismiss="modal" appModal>&times;</button>
+                        </div>
+                        <div class="modal-body"><br>
+                          <!-- Warehouse selection-->
+                          <div class="row" style="margin: inherit">
+                            <div class="col-lg-12">
+                              <label class="control-label " for="title">Client Warehouse</label>
+                              <select class="form-control" id="clientWarehouseSingle" (change)="selectCourier()">
+                                <option value="">- Choose Warehouse -</option>
+                                <option *ngFor="let item of warehouseList; let i = index" [value]="item.warehouseCode" >
+                                  {{item.warehouseName}}
+                                </option>
+                              </select>
+                            </div>
+                          </div><br>
+                          <!-- End warehouse selection-->
+                          <div class="row" style="margin: inherit">
+                            <div role="tabpanel" style="width: 100%">
+                              <ul class="nav nav-tabs" role="tablist">
+                                <li *ngFor="let item of serviceTypes; let i=index;" role="presentation"  [class.active]="i === 0">
+                                  <a href="#{{item}}" id="serviceTab{{i}}" aria-controls="{{item}} SERVICE" role="tab" data-toggle="tab" aria-expanded="false" target="_self" >{{item}} Service</a>
+                                </li>
+                              </ul>
+                              <div class="tab-content">
+                                <div  *ngFor="let item of serviceTypes; let i=index; let odd = odd" [ngClass]="odd ? 'odd_col' : 'even_col' " role="tabpanel" [class.active]="i === 0" class="tab-pane" id="{{item}}">
+                                  <!--<table style="width:100%">-->
+                                  <table class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                                    <tr>
+                                      <th style="width:20%;">Select Courier</th>
+                                      <th>Courier</th>
+                                      <th>Delivery Charge</th>
+                                    </tr>
+                                    <tr *ngFor="let obj of singleResponse.responseBody[item];">
+                                      <!--<td style="width: 14px"><input type="checkbox" value="{{obj.courierCode}}"  (click)="checkCourierAndAwb(currentAwb, obj.courierCode)"><span class="checkBoxCustomCss"></span></td>-->
+                                      <td style="width: 14px">
+                                        <label class="container">
+                                          <input type="radio" value="{{obj.courierCode}}" (change)="checkCourierAndAwb(currentAwb, obj.courierCode)" name="radio"><span class="checkmark"></span>
+                                        </label>
+                                      </td>
+                                      <td>{{obj.courierName}}</td>
+                                      <td>
+                                        <div class="icon title"><span style="color: green"> &nbsp;<i class="fa fa-rupee"></i>
+			                                    </span> &nbsp;<span id="rewardBalance" style="color: green">{{obj.serviceCharge}}</span>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </table>
+
+                                  <div class="row">
+                                    <div class="col-lg-offset-5 col-lg-2"><br><br>
+                                      <button type="button" class="btn btn-primary" style="background-color: green" (click)="assigneeCourier()">Assignee Courier</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button class="btn btn-secondary" data-dismiss="modal" appModal>Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <!--AssigneeCourierBulkModel popup start hear-->
+                <div class="row">
+                  <!-- MODAL -->
+                  <div class="modal" id="assigneeCourierBulkModel" >
+                    <div class="modal-dialog modal-lg" style="left: auto; margin-top: 43px;">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Ship Courier in Bulk</h5>
+                          <button class="close" data-dismiss="modal" appModal>&times;</button>
+                        </div><br>
+                        <!--Client warehouse selection-->
+                        <div class="row" style="margin: inherit">
+                          <div class="col-lg-12">
+                            <label class="control-label " for="title">Select Client Warehouse</label>
+                            <select class="form-control" id="clientWarehouseBulk">
+                              <option value="">- Choose Warehouse -</option>
+                              <option *ngFor="let item of warehouseList; let i = index" [value]="item.warehouseCode" >
+                                {{item.warehouseName}}
+                              </option>
+                            </select>
+                          </div>
+                        </div><br>
+                        <!--End Hear Client warehouse selection-->
+                        <div class="row" style="margin: inherit">
+                          <div class="modal-body">
+                            <div role="tabpanel">
+                              <ul class="nav nav-tabs" role="tablist">
+                                <li *ngFor="let item of serviceTypes; let i=index;" role="presentation"  [class.active]="i === 0">
+                                  <a href="#{{item}}-bulk" id="serviceBulkTab{{i}}" aria-controls="{{item}}" role="tab" data-toggle="tab" aria-expanded="false" target="_self"  class="text-capitalize" >{{item}}</a>
+                                </li>
+                              </ul>
+                              <div class="tab-content">
+                                <div  *ngFor="let item of serviceTypes; let i=index; let odd = odd" [ngClass]="odd ? 'odd_col' : 'even_col' " role="tabpanel" [class.active]="i === 0" class="tab-pane" id="{{item}}-bulk">
+                                  <div class="row"><br><br>
+                                    <div class="col-lg-6">
+                                      <label class="control-label" for="title">Select Courier<span style="color:red">*</span></label>
+                                      <select class="form-control" id="bulkAssigneeCourier{{i}}">
+                                        <option value="">- Select Courier -</option>
+                                        <option *ngFor="let courierDetails of singleResponse.responseBody[item]; let i = index" [value]="courierDetails.courierCode" >
+                                          {{courierDetails.courierName}}
+                                        </option>
+                                      </select>
+                                    </div>
+                                    <div class="col-lg-6"><br>
+                                      <button type="button" class="btn btn-primary"  style="background-color: green" (click)="assigneeCourierBulk('bulkAssigneeCourier'+i)">Ship Now</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <br>
+                        <div class="modal-footer">
+                          <button class="btn btn-secondary" data-dismiss="modal" appModal>Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!--Assigned Courier By Priority popup start hear-->
+                <div class="row">
+                  <!-- MODAL -->
+                  <div class="modal" id="assigneeCourierByPriorityModel" >
+                    <div class="modal-dialog modal-lg" style="left: auto; margin-top: 43px;">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Ship  Courier Priority Wise</h5>
+                          <button class="close" data-dismiss="modal" appModal>&times;</button>
+                        </div>
+                        <div class="modal-body"><br>
+                          <!--Client warehouse selection-->
+                          <div class="row" style="margin: inherit">
+                            <div class="col-lg-12">
+                              <label class="control-label " for="title">Select Client Warehouse</label>
+                              <select class="form-control" id="clientWarehousePriority">
+                                <option value="">- Choose Warehouse -</option>
+                                <option *ngFor="let item of warehouseList; let i = index" [value]="item.warehouseCode" >
+                                  {{item.warehouseName}}
+                                </option>
+                              </select>
+                            </div>
+                          </div><br>
+                          <!--End Hear Client warehouse selection-->
+
+                          <div class="row" style="margin: inherit"><br>
+                            <div class="col-lg-6">
+                              <label class="control-label" for="title">Select Service Type<span style="color:red">*</span></label>
+                              <select class="form-control" id="serviceType">
+                                <option value="">- Select Service Type -</option>
+                                <option *ngFor="let item of serviceTypes; let i = index" [value]="item" >
+                                  {{item}}
+                                </option>
+                              </select>
+                            </div>
+                            <div class="col-lg-6"><br>
+                              <button type="button" class="btn btn-primary"  style="background-color: green" (click)="assignedCourierByPriority()">Ship Now</button>
+                            </div>
+                          </div>
+                        </div><br>
+                        <div class="modal-footer">
+                          <button class="btn btn-secondary" data-dismiss="modal" appModal>Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</section>

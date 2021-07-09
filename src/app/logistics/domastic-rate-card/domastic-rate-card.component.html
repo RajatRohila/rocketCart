@@ -1,0 +1,1667 @@
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <!--Loader start hear-->
+      <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" type = "ball-scale-multiple" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Domastic Rate Card &nbsp;&nbsp;&nbsp;&nbsp;
+              <BUTTON *ngIf="isDisplay" class="btn btn-primary" (click)="addNew()">Add Record</BUTTON>&nbsp;&nbsp;&nbsp;&nbsp;
+              <BUTTON *ngIf="isDisplay" class="btn btn-primary" (click)="excalUpload()">Bulk Upload</BUTTON>&nbsp;&nbsp;&nbsp;&nbsp;
+              <BUTTON *ngIf="isDisplay" class="btn btn-primary" (click)="onDownloadDomesticRateCardReport()">Download Report</BUTTON>
+              <!--<button *ngIf="isDisplay" class="btn btn-default"><a href="#" (click)="addNew()">Add Record</a></button>-->
+              <!-- <button *ngIf="isFirst" class="btn btn-default"> <a href="#" (click)="addNew()">Add  Record</a></button>&nbsp;-->
+              <!-- <button *ngIf="isAdd" class="btn btn-default"> <a href="#" (click)="showRecords()">Show  Records</a></button>-->
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <!--Bulk upload form start hear-->
+            <div class="padd" *ngIf="isUpload">
+              <div class="form quick-post">
+                <!-- Edit profile form (not working)-->
+                <form class="form-horizontal" [formGroup]="form" (ngSubmit)="onBulkUpload()">
+                  <!-- Title -->
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-lg-2 col-lg-offset-1"> <span style="color:green;">Total Records = {{responseBody.totalRecord}}</span> </div>
+                      <div class="col-lg-2"> <span style="color:green;">Success Records = {{responseBody.successRecord}}</span></div>
+                      <div class="col-lg-3"> <span style="color:red;">Error Records = {{responseBody.errorRecord}}</span>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="row">
+                          <div class="col-lg-6">
+                            <button [class.col-lg-6]="" type="button" class="btn btn-primary" (click)="downloadSuccessFile()">Download Success File</button>
+                          </div>
+                          <div class="col-lg-6">
+                            <button type="button" class="btn btn-danger" (click)="downloadErrorFile()">Download Error File</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div><br>
+                    <!--Progress Bar start hear-->
+                    <div class="row" *ngIf="isUploadStart">
+                      <div class="col-lg-10 col-lg-offset-1">
+                        <div class="progress" style="height: 20px;">
+                          <div class="progress-bar progress-bar-striped progress-bar-animated" style="{{'width:' + uploadPresentage +'%'}}; height: 20px;"> {{uploadPresentage+'%'}}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--Progress Bar end hear-->
+                    <div class="row">
+                      <div class="col-lg-2 col-lg-offset-1">
+                        <div class="row">
+                          <div class="col-lg-3">
+                            <div><label class="control-label" for="title">isUpdate</label></div>
+                          </div>
+                          <div class="col-lg-3 col-lg-offset-1">
+                            <input class="form-check-input" type="checkbox" value="false" formControlName="isUpdate"
+                                   (change)="isCheck('UPDATE')">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-lg-4 ">
+                        <label class="control-label" for="title">Select Upload File<span
+                          style="color:red">*</span></label>
+                        <input type="file" class="form-control" name="file" (change)="onFileChange($event)">
+                      </div>
+                      <div class="col-lg-4"><br>
+                        <div class="row">
+                          <div class="col-lg-6">
+                            <button type="submit" class="btn btn-primary" [disabled]="isUploadButtonDisabled">Upload</button>
+                          </div>
+                          <div class="col-lg-6">
+                            <button type="button" class="btn btn-primary" (click)="downloadTemplate()">Download Template
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                    <div class="form-group">
+                      <div class="col-lg-offset-4 col-lg-7">
+                       <!-- <button type="button" (click)="cancelButtonAction()" class="btn btn-close">Cancel</button>-->
+                        <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                      </div>
+                    </div>
+
+                  </div>
+                </form>
+
+              </div>
+
+            </div>
+            <!--Add form start hear-->
+            <div class="padd" *ngIf="isAdd">
+              <div class="form-group">
+                <!--<div class="col-lg-10 col-lg-offset-1">-->
+                <div class="row" style="margin: auto">
+                  <div class="col-lg-4">
+                    <label class="control-label">Rate Card Code<span style="color:red">*</span></label>
+                    <input type="text" class="form-control" id="rateCardCode" >
+                  </div>
+                  <div class="col-lg-4">
+                    <label class="control-label">Rate Card Name<span style="color:red">*</span></label>
+                    <input type="text" class="form-control" id="rateCardName" >
+                  </div>
+                  <div class="col-lg-4">
+                    <label class="control-label">Select Courier<span style="color:red">*</span></label>
+                    <select class="form-control" id="courier" >
+                      <option value="">- Select Courier Code -</option>
+                      <option *ngFor="let item of courierList; let i = index" [value]="item.courierCode">
+                        {{item.courierName}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <!--</div>-->
+                <!--<div class="col-lg-10 col-lg-offset-1">-->
+                <div class="row" style="margin: auto">
+                  <div class="col-lg-4">
+                    <label class="control-label">Select Service Provider<span style="color:red">*</span></label>
+                    <select class="form-control" id="serviceProvider" >
+                      <option value="">- Select Service Provider -</option>
+                      <option *ngFor="let item of serviceProviderList; let i = index" [value]="item.serviceProviderCode">
+                        {{item.serviceProviderName}}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="col-lg-4">
+                    <label class="control-label">Select Rate Card Type<span style="color:red">*</span></label>
+                    <select class="form-control" id="rateCardType" >
+                      <option value="">- Select Rate Card Type -</option>
+                      <option *ngFor="let item of rateCardTypeList; let i = index" [value]="item.typeCode">
+                        {{item.typeName}}
+                      </option>
+                    </select>
+                  </div>
+                  <!--<div class="col-lg-4">
+                    <label class="control-label">Select Service Type<span style="color:red">*</span></label>
+                    <select class="form-control" id="serviceType"  >
+                      <option value="">- Select Service Type -</option>
+                      <option *ngFor="let item of serviceTypeList; let i = index" [value]="item.serviceCode">
+                        {{item.serviceName}}
+                      </option>
+                    </select>
+                  </div>-->
+                  <div class="col-lg-4">
+                    <label class="control-label">Select Freight Type<span style="color:red">*</span></label>
+                    <select class="form-control" id="freightType"
+                            #mySelect (change)='onChangeFrightType(mySelect.value)'>
+                      <option value="">- Select Freight Type -</option>
+                      <option value="SLAB">SLAB</option>
+                      <option value="FLAT">FLAT</option>
+                    </select>
+                  </div>
+                </div>
+                <!--<div class="row" style="margin: auto">
+                  <div class="col-lg-4">
+                    <label class="control-label">Select Rate Card Type<span style="color:red">*</span></label>
+                    <select class="form-control" id="rateCardType" >
+                      <option value="">- Select Rate Card Type -</option>
+                      <option *ngFor="let item of rateCardTypeList; let i = index" [value]="item.typeCode">
+                        {{item.typeName}}
+                      </option>
+                    </select>
+                  </div>
+                </div><br>-->
+                <!--</div>-->
+                <!--Local Zone Rate -->
+                <div *ngIf="selectFrightType">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <div class="pull-left">LOCAL ZONE RATE</div>
+                    </div>
+                    <div class="panel-body">
+                      <div class="padd">
+                        <div class="form quick-post">
+                          <div class="form-group">
+                            <div class="row" style="margin: auto" *ngIf="flateRate">
+                              <!--<div *ngIf="flateRate">-->
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Weight (Kg)<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="localZoneBaseWeight" >
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control"  id="localZoneBaseRate">
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Weight (Kg)<span
+                                  style="color:red">*</span></label>
+                                <input type="text" class="form-control"  id="localZoneIncrementalWeight">
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="localZoneIncrementalRate">
+                              </div>
+                            </div>
+                            <div [hidden]="!slabRate">
+                              <table
+                                class=" table table-striped table-condensed table-bordered table-hover display dataTable"
+                                cellspacing="0" style="width:100%;" id="localZone">
+                                <thead>
+                                <tr class="text-center"
+                                    style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                                  <th>From Weight (Kg)</th>
+                                  <th>To Weight (Kg)</th>
+                                  <th>Rate</th>
+                                  <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tableRowAdder">
+                                <tr *ngFor="let dynamic of dynLocalZone; let i = index;">
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynLocalZone[i].fromWeight"
+                                           value={{dynLocalZone[i].fromWeight}}
+                                           name="{{dynLocalZone[i].fromWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynLocalZone[i].toWeight"
+                                           value={{dynLocalZone[i].toWeight}}
+                                           name="{{dynLocalZone[i].toWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynLocalZone[i].rate"
+                                           value={{dynLocalZone[i].rate}}
+                                           name="{{dynLocalZone[i].rate}}">
+                                  </td>
+                                  <td>
+                                    <a class="actionButton " id="add" (click)="addTableRowLocal();"
+                                       style="color: #ffffff;border-radius: 6px;background-color: #660000;padding: 5px 4px 4px 4px;">Add</a>
+                                    &nbsp;&nbsp;
+                                    <a class="actionButton removebutton" id="delete" (click)="deleteFieldValueLocal(i);"
+                                       style=";color: #ffffff;border-radius: 6px;background-color:#88be14;padding: 5px 2px 4px 4px;">DELETE</a>
+                                  </td>
+                                </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">AWB Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneAwbCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Min Cod Charge<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneMinCodCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Cod Charge Percent<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneCodChargePercent">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">FSC<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneFSC">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">GST<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneGST">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ROV Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneROV">
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">FOV<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneFOV">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Handling Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneHandlingCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ODA<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneODA">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Insurance Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneInsuranceCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Covid Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="localZoneCovidCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Other Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="localZoneOtherCharge">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!--METRO Zone Rate -->
+                <div *ngIf="selectFrightType">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <div class="pull-left">METRO ZONE RATE</div>
+                    </div>
+                    <div class="panel-body">
+                      <div class="padd">
+                        <div class="form quick-post">
+                          <div class="form-group">
+                            <div class="row" style="margin: auto" *ngIf="flateRate">
+                              <!--<div *ngIf="flateRate">-->
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Weight (Kg)<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="metroZoneBaseWeight">
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="metroZoneBaseRate">
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Weight (Kg)<span
+                                  style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="metroZoneIncrementalWeight">
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="metroZoneIncrementalRate">
+                              </div>
+                            </div>
+                            <div *ngIf="slabRate">
+                              <table
+                                class=" table table-striped table-condensed table-bordered table-hover display dataTable"
+                                cellspacing="0" style="width:100%;">
+                                <thead>
+                                <tr class="text-center"
+                                    style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                                  <th>From Weight (Kg)</th>
+                                  <th>To Weight (Kg)</th>
+                                  <th>Rate</th>
+                                  <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let dynamic of dynMetroZone; let i = index;">
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynMetroZone[i].fromWeight"
+                                           value={{dynMetroZone[i].fromWeight}}
+                                           name="{{dynMetroZone[i].fromWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynMetroZone[i].toWeight"
+                                           value={{dynMetroZone[i].toWeight}}
+                                           name="{{dynMetroZone[i].toWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynMetroZone[i].rate"
+                                           value={{dynMetroZone[i].rate}}
+                                           name="{{dynMetroZone[i].rate}}">
+                                  </td>
+                                  <td>
+                                    <a class="actionButton " (click)="addTableRowMetro();"
+                                       style="color: #ffffff;border-radius: 6px;background-color: #660000;padding: 5px 4px 4px 4px;">Add</a>
+                                    &nbsp;&nbsp;
+                                    <a class="actionButton removebutton" (click)="deleteFieldValueMetro(i);"
+                                       style=";color: #ffffff;border-radius: 6px;background-color:#88be14;padding: 5px 2px 4px 4px;">DELETE</a>
+                                  </td>
+                                </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">AWB Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="metroZoneAwbCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Min Cod Charge<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="metroZoneMinCodCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Cod Charge Percent<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="metroZoneCodChargePercent">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">FSC<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="metroZoneFSC">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">GST<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="metroZoneGST">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ROV Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="metroZoneROV">
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">FOV<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="metroZoneFOV">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Handling Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="metroZoneHandlingCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ODA<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="metroZoneODA">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Insurance Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="metroZoneInsuranceCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Covid Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="metroZoneCovidCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Other Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="metroZoneOtherCharge">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+
+                <!--ROI Zone Rate -->
+                <div *ngIf="selectFrightType">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <div class="pull-left">ROI ZONE RATE</div>
+                    </div>
+                    <div class="panel-body">
+                      <div class="padd">
+                        <div class="form quick-post">
+                          <div class="form-group">
+                            <div class="row" style="margin: auto" *ngIf="flateRate">
+                              <!--<div *ngIf="flateRate">-->
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Weight (Kg)<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="roiZoneBaseWeight">
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="roiZoneBaseRate">
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Weight (Kg)<span
+                                  style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="roiZoneIncrementalWeight">
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="roiZoneIncrementalRate">
+                              </div>
+                            </div>
+                            <div *ngIf="slabRate">
+                              <table
+                                class=" table table-striped table-condensed table-bordered table-hover display dataTable"
+                                cellspacing="0" style="width:100%;">
+                                <thead>
+                                <tr class="text-center"
+                                    style="background-color: #2f3e4c; color: #ffffff; height: 40px;">
+                                  <th>From Weight (Kg)</th>
+                                  <th>To Weight (Kg)</th>
+                                  <th>Rate</th>
+                                  <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let dynamic of dynRoiZone; let i = index;">
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynRoiZone[i].fromWeight"
+                                           value={{dynRoiZone[i].fromWeight}}
+                                           name="{{dynRoiZone[i].fromWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynRoiZone[i].toWeight"
+                                           value={{dynRoiZone[i].toWeight}}
+                                           name="{{dynRoiZone[i].toWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynRoiZone[i].rate"
+                                           value={{dynRoiZone[i].rate}}
+                                           name="{{dynRoiZone[i].rate}}">
+                                  </td>
+                                  <td>
+                                    <a class="actionButton " (click)="addTableRowRoi();"
+                                       style="color: #ffffff;border-radius: 6px;background-color: #660000;padding: 5px 4px 4px 4px;">Add</a>
+                                    &nbsp;&nbsp;
+                                    <a class="actionButton removebutton" (click)="deleteFieldValueRoi(i);"
+                                       style=";color: #ffffff;border-radius: 6px;background-color:#88be14;padding: 5px 2px 4px 4px;">DELETE</a>
+                                  </td>
+                                </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">AWB Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="roiZoneAwbCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Min Cod Charge<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="roiZoneMinCodCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Cod Charge Percent<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="roiZoneCodChargePercent">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">FSC<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="roiZoneFSC">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">GST<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="roiZoneGST">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ROV Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="roiZoneROV">
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">FOV<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="roiZoneFOV">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Handling Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="roiZoneHandlingCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ODA<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="roiZoneODA">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Insurance Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="roiZoneInsuranceCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Covid Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="roiZoneCovidCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Other Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="roiZoneOtherCharge">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <!--NEJK Zone Rate -->
+                <div *ngIf="selectFrightType">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <div class="pull-left">NEJK ZONE RATE</div>
+                    </div>
+                    <div class="panel-body">
+                      <div class="padd">
+                        <div class="form quick-post">
+                          <div class="form-group">
+                            <div class="row" style="margin: auto" *ngIf="flateRate">
+                              <!--<div *ngIf="flateRate">-->
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Weight (Kg)<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="nejkZoneBaseWeight">
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="nejkZoneBaseRate">
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Weight (Kg)<span
+                                  style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="nejkZoneIncrementalWeight">
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="nejkZoneIncrementalRate">
+                              </div>
+                            </div>
+                            <div *ngIf="slabRate">
+                              <table
+                                class=" table table-striped table-condensed table-bordered table-hover display dataTable"
+                                cellspacing="0" style="width:100%;">
+                                <thead>
+                                <tr class="text-center"
+                                    style="background-color: #2f3e4c; color: #ffffff; height: 40px;">
+                                  <th>From Weight(Kg)</th>
+                                  <th>To Weight(Kg)</th>
+                                  <th>Rate</th>
+                                  <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let dynamic of dynNejkZone; let i = index;">
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynNejkZone[i].fromWeight"
+                                           value={{dynNejkZone[i].fromWeight}}
+                                           name="{{dynNejkZone[i].fromWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynNejkZone[i].toWeight"
+                                           value={{dynNejkZone[i].toWeight}}
+                                           name="{{dynNejkZone[i].toWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynNejkZone[i].rate"
+                                           value={{dynNejkZone[i].rate}}
+                                           name="{{dynNejkZone[i].rate}}">
+                                  </td>
+                                  <td>
+                                    <a class="actionButton " (click)="addTableRowNejk();"
+                                       style="color: #ffffff;border-radius: 6px;background-color: #660000;padding: 5px 4px 4px 4px;">Add</a>
+                                    &nbsp;&nbsp;
+                                    <a class="actionButton removebutton" (click)="deleteFieldValueNejk(i);"
+                                       style=";color: #ffffff;border-radius: 6px;background-color:#88be14;padding: 5px 2px 4px 4px;">DELETE</a>
+                                  </td>
+                                </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">AWB Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="nejkZoneAwbCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Min Cod Charge<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="nejkZoneMinCodCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Cod Charge Percent<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="nejkZoneCodChargePercent">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">FSC<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="nejkZoneFSC">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">GST<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="nejkZoneGST">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ROV Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="nejkZoneROV">
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">FOV<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="nejkZoneFOV">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Handling Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="nejkZoneHandlingCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ODA<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="nejkZoneODA">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Insurance Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="nejkZoneInsuranceCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Covid Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="nejkZoneCovidCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Other Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="nejkZoneOtherCharge">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <!--WITHINREGION Zone Rate -->
+                <div *ngIf="selectFrightType">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <div class="pull-left">WITHIN STATE ZONE RATE</div>
+                    </div>
+                    <div class="panel-body">
+                      <div class="padd">
+                        <div class="form quick-post">
+                          <div class="form-group">
+                            <div class="row" style="margin: auto" *ngIf="flateRate">
+                              <!--<div *ngIf="flateRate">-->
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Weight (Kg)<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="withinRegionZoneBaseWeight">
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="withinRegionZoneBaseRate">
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Weight (Kg)<span
+                                  style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="withinRegionZoneIncrementalWeight">
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="withinRegionZoneIncrementalRate">
+                              </div>
+                            </div>
+                            <div *ngIf="slabRate">
+                              <table
+                                class=" table table-striped table-condensed table-bordered table-hover display dataTable"
+                                cellspacing="0" style="width:100%;">
+                                <thead>
+                                <tr class="text-center"
+                                    style="background-color: #2f3e4c; color: #ffffff; height: 40px;">
+                                  <th>From Weight (Kg)</th>
+                                  <th>To Weight (Kg)</th>
+                                  <th>Rate</th>
+                                  <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let dynamic of dynWithinRegionZone; let i = index;">
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynWithinRegionZone[i].fromWeight"
+                                           value={{dynWithinRegionZone[i].fromWeight}}
+                                           name="{{dynWithinRegionZone[i].fromWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynWithinRegionZone[i].toWeight"
+                                           value={{dynWithinRegionZone[i].toWeight}}
+                                           name="{{dynWithinRegionZone[i].toWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynWithinRegionZone[i].rate"
+                                           value={{dynWithinRegionZone[i].rate}}
+                                           name="{{dynWithinRegionZone[i].rate}}">
+                                  </td>
+                                  <td>
+                                    <a class="actionButton " (click)="addTableWithinRegion();"
+                                       style="color: #ffffff;border-radius: 6px;background-color: #660000;padding: 5px 4px 4px 4px;">Add</a>
+                                    &nbsp;&nbsp;
+                                    <a class="actionButton removebutton" (click)="deleteFieldValueWithinRegion(i);"
+                                       style=";color: #ffffff;border-radius: 6px;background-color:#88be14;padding: 5px 2px 4px 4px;">DELETE</a>
+                                  </td>
+                                </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">AWB Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="withinRegionZoneAwbCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Min Cod Charge<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="withinRegionZoneMinCodCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Cod Charge Percent<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="withinRegionZoneCodChargePercent">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">FSC<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="withinRegionZoneFSC">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">GST<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="withinRegionZoneGST">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ROV Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="withinRegionZoneROV">
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">FOV<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="withinRegionZoneFOV">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Handling Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="withinRegionZoneHandlingCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ODA<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="withinRegionZoneODA">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Insurance Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="withinRegionZoneInsuranceCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Covid Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="withinRegionZoneCovidCharge">
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Other Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="withinRegionZoneOtherCharge">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="form-group">
+                <div class="col-lg-offset-2 col-lg-9">
+                  <button type="submit" class="btn btn-primary" (click)="onSubmit();">Save</button>&nbsp;&nbsp;&nbsp;
+                  <button type="reset" class="btn btn-default">Reset</button>&nbsp;&nbsp;&nbsp;
+                  <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                </div>
+              </div>
+            </div>
+
+            <!--Update form start hear-->
+            <div class="padd" *ngIf="isUpdate">
+              <div class="form-group">
+                <!--<div class="col-lg-10 col-lg-offset-1">-->
+                <div class="row">
+                  <input readonly type="hidden"  id="mainObjId"  name="IdUpdate"  [(ngModel)]="singleRecord.id" value={{singleRecord.id}}>
+                </div><br>
+                <div class="row" style="margin: auto">
+                  <div class="col-lg-4">
+                    <label class="control-label">Rate Card Code<span style="color:red">*</span></label>
+                    <input type="text" class="form-control" id="rateCardCodeUpdate" [(ngModel)]="singleRecord.rateCardCode" value={{singleRecord.rateCardCode}}>
+                  </div>
+                  <div class="col-lg-4">
+                    <label class="control-label">Rate Card Name<span style="color:red">*</span></label>
+                    <input type="text" class="form-control" id="rateCardNameUpdate" [(ngModel)]="singleRecord.rateCardName" value={{singleRecord.rateCardName}}>
+                  </div>
+                  <div class="col-lg-4">
+                    <label class="control-label">Select Courier<span style="color:red">*</span></label>
+                    <select class="form-control" id="courierUpdate" [(ngModel)]="singleRecord.courierCode">
+                      <option value="">- Select Courier Code -</option>
+                      <option *ngFor="let item of courierList; let i = index" [value]="item.courierCode">
+                        {{item.courierName}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <!--</div>-->
+                <!--<div class="col-lg-10 col-lg-offset-1">-->
+                <div class="row" style="margin: auto">
+                  <div class="col-lg-4">
+                    <label class="control-label">Select Service Provider<span style="color:red">*</span></label>
+                    <select class="form-control" id="serviceProviderUpdate" [(ngModel)]="singleRecord.serviceProviderCode">
+                      <option value="">- Select Service Provider -</option>
+                      <option *ngFor="let item of serviceProviderList; let i = index" [value]="item.serviceProviderCode">
+                        {{item.serviceProviderName}}
+                      </option>
+                    </select>
+                  </div>
+                  <!--<div class="col-lg-4">
+                    <label class="control-label">Select Service Type<span style="color:red">*</span></label>
+                    <select class="form-control" id="serviceTypeUpdate"  [(ngModel)]="singleRecord.serviceTypeCode">
+                      <option value="">- Select Service Type -</option>
+                      <option *ngFor="let item of serviceTypeList; let i = index" [value]="item.serviceCode">
+                        {{item.serviceName}}
+                      </option>
+                    </select>
+                  </div>-->
+                  <div class="col-lg-4">
+                    <label class="control-label">Select Rate Card Type<span style="color:red">*</span></label>
+                    <select class="form-control" id="rateCardTypeUpdate" [(ngModel)]="singleRecord.rateCardTypeCode">
+                      <option value="">- Select Rate Card Type -</option>
+                      <option *ngFor="let item of rateCardTypeList; let i = index" [value]="item.typeCode">
+                        {{item.typeName}}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="col-lg-4">
+                    <label class="control-label">Select Freight Type<span style="color:red">*</span></label>
+                    <select class="form-control" id="freightTypeUpdate"
+                            #mySelect (change)='onChangeFrightType(mySelect.value)' [(ngModel)]="singleRecord.freightType">
+                      <option value="">- Select Freight Type -</option>
+                      <option value="SLAB">SLAB</option>
+                      <option value="FLAT">FLAT</option>
+                    </select>
+                  </div>
+                </div>
+                <!--<div class="row" style="margin: auto">
+                  <div class="col-lg-4">
+                    <label class="control-label">Select Rate Card Type<span style="color:red">*</span></label>
+                    <select class="form-control" id="rateCardTypeUpdate" [(ngModel)]="singleRecord.rateCardTypeCode">
+                      <option value="">- Select Rate Card Type -</option>
+                      <option *ngFor="let item of rateCardTypeList; let i = index" [value]="item.typeCode">
+                        {{item.typeName}}
+                      </option>
+                    </select>
+                  </div>
+                </div><br>-->
+                <!--</div>-->
+                <!--Local Zone Rate -->
+                <div *ngIf="selectFrightType">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <div class="pull-left">LOCAL ZONE RATE</div>
+                    </div>
+                    <div class="panel-body">
+                      <div class="padd">
+                        <div class="form quick-post">
+                          <div class="form-group">
+                            <div class="row">
+                              <input readonly type="hidden"  id="localZoneId"  name="localZoneId"  [(ngModel)]="localOtherCharges.id" value={{localOtherCharges.id}}>
+                            </div><br>
+                            <div class="row" style="margin: auto" *ngIf="flateRate">
+                              <!--<div *ngIf="flateRate">-->
+                              <input readonly type="hidden"  id="localZoneFlateId"  name="localZoneFlateId"  [(ngModel)]="localFlateCharge.id" value={{localFlateCharge.id}}>
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Weight (Kg)<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="localZoneBaseWeightUpdate"  value={{localFlateCharge.baseWeight}}>
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control"  id="localZoneBaseRateUpdate" value={{localFlateCharge.baseRate}}>
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Weight (Kg)<span
+                                  style="color:red">*</span></label>
+                                <input type="text" class="form-control"  id="localZoneIncrementalWeightUpdate" value={{localFlateCharge.incrementalWeight}}>
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="localZoneIncrementalRateUpdate" value={{localFlateCharge.incrementalRate}}>
+                              </div>
+                            </div>
+                            <div [hidden]="!slabRate">
+                              <table
+                                class=" table table-striped table-condensed table-bordered table-hover display dataTable"
+                                cellspacing="0" style="width:100%;" id="localZoneUpdate">
+                                <thead>
+                                <tr class="text-center"
+                                    style="background-color: #2f3e4c; color: #ffffff; height: 40px;">
+                                  <th>From Weight (Kg)</th>
+                                  <th>To Weight (Kg)</th>
+                                  <th>Rate</th>
+                                  <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tableRowAdderUpdate">
+                                <tr *ngFor="let dynamic of dynLocalZone; let i = index;">
+                                  <input readonly type="hidden"  class="form-control"  name="{{dynLocalZone[i].id}}"  [(ngModel)]="dynLocalZone[i].id" value={{dynLocalZone[i].id}}>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynLocalZone[i].fromWeight"
+                                           value={{dynLocalZone[i].fromWeight}}
+                                           name="{{dynLocalZone[i].fromWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynLocalZone[i].toWeight"
+                                           value={{dynLocalZone[i].toWeight}}
+                                           name="{{dynLocalZone[i].toWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynLocalZone[i].rate"
+                                           value={{dynLocalZone[i].rate}}
+                                           name="{{dynLocalZone[i].rate}}">
+                                  </td>
+                                  <td>
+                                    <a class="actionButton "  (click)="addTableRowLocal();"
+                                       style="color: #ffffff;border-radius: 6px;background-color: #660000;padding: 5px 4px 4px 4px;">Add</a>
+                                    &nbsp;&nbsp;
+                                    <a class="actionButton removebutton"  (click)="deleteFieldValueLocal(i);"
+                                       style=";color: #ffffff;border-radius: 6px;background-color:#88be14;padding: 5px 2px 4px 4px;">DELETE</a>
+                                  </td>
+                                </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">AWB Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneAwbChargeUpdate" value={{localOtherCharges.awbCharge}} >
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Min Cod Charge<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneMinCodChargeUpdate" value={{localOtherCharges.minCodCharge}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Cod Charge Percent<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneCodChargePercentUpdate" value={{localOtherCharges.codChargePercent}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">FSC<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneFSCUpdate"  value={{localOtherCharges.fsc}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">GST<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneGSTUpdate" value={{localOtherCharges.gst}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ROV Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneROVUpdate" value={{localOtherCharges.rovCharge}}>
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">FOV<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneFOVUpdate" value={{localOtherCharges.fov}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Handling Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneHandlingChargeUpdate" value={{localOtherCharges.handlingCharges}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ODA<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneODAUpdate" value={{localOtherCharges.oda}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Insurance Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="localZoneInsuranceChargeUpdate" value={{localOtherCharges.insuranceCharges}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Covid Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="localZoneCovidChargeUpdate" value={{localOtherCharges.covidCharges}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Other Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="localZoneOtherChargeUpdate" value={{localOtherCharges.otherCharges}}>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!--METRO Zone Rate -->
+                <div *ngIf="selectFrightType">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <div class="pull-left">METRO ZONE RATE</div>
+                    </div>
+                    <div class="panel-body">
+                      <div class="padd">
+                        <div class="form quick-post">
+                          <div class="form-group">
+                            <input readonly type="hidden"  id="metroZoneId"  name="metroId"  [(ngModel)]="METROOtherCharges.id" value={{METROOtherCharges.id}}>
+                            <div class="row" style="margin: auto" *ngIf="flateRate">
+                              <!--<div *ngIf="flateRate">-->
+                              <input readonly type="hidden"  id="metroZoneFlateId"  name="metroFlateId"  [(ngModel)]="metroFlateCharge.id" value={{metroFlateCharge.id}}>
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Weight (Kg)<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="metroZoneBaseWeightUpdate" value={{metroFlateCharge.baseWeight}}>
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="metroZoneBaseRateUpdate" value={{metroFlateCharge.baseRate}}>
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Weight (Kg)<span
+                                  style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="metroZoneIncrementalWeightUpdate" value={{metroFlateCharge.incrementalWeight}}>
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="metroZoneIncrementalRateUpdate" value={{metroFlateCharge.incrementalRate}}>
+                              </div>
+                            </div>
+                            <div *ngIf="slabRate">
+                              <table
+                                class=" table table-striped table-condensed table-bordered table-hover display dataTable"
+                                cellspacing="0" style="width:100%;">
+                                <thead>
+                                <tr class="text-center"
+                                    style="background-color: #2f3e4c; color: #ffffff; height: 40px;">
+                                  <th>From Weight (Kg)</th>
+                                  <th>To Weight (Kg)</th>
+                                  <th>Rate</th>
+                                  <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let dynamic of dynMetroZone; let i = index;">
+                                  <input readonly type="hidden"  class="form-control"  name="{{dynMetroZone[i].id}}"  [(ngModel)]="dynMetroZone[i].id" value={{dynMetroZone[i].id}}>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynMetroZone[i].fromWeight"
+                                           value={{dynMetroZone[i].fromWeight}}
+                                           name="{{dynMetroZone[i].fromWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynMetroZone[i].toWeight"
+                                           value={{dynMetroZone[i].toWeight}}
+                                           name="{{dynMetroZone[i].toWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynMetroZone[i].rate"
+                                           value={{dynMetroZone[i].rate}}
+                                           name="{{dynMetroZone[i].rate}}">
+                                  </td>
+                                  <td>
+                                    <a class="actionButton " (click)="addTableRowMetro();"
+                                       style="color: #ffffff;border-radius: 6px;background-color: #660000;padding: 5px 4px 4px 4px;">Add</a>
+                                    &nbsp;&nbsp;
+                                    <a class="actionButton removebutton" (click)="deleteFieldValueMetro(i);"
+                                       style=";color: #ffffff;border-radius: 6px;background-color:#88be14;padding: 5px 2px 4px 4px;">DELETE</a>
+                                  </td>
+                                </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">AWB Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="metroZoneAwbChargeUpdate" value={{METROOtherCharges.awbCharge}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Min Cod Charge<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="metroZoneMinCodChargeUpdate" value={{METROOtherCharges.minCodCharge}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Cod Charge Percent<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="metroZoneCodChargePercentUpdate" value={{METROOtherCharges.codChargePercent}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">FSC<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="metroZoneFSCUpdate" value={{METROOtherCharges.fsc}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">GST<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="metroZoneGSTUpdate" value={{METROOtherCharges.gst}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ROV Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="metroZoneROVUpdate" value={{METROOtherCharges.rovCharge}}>
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">FOV<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="metroZoneFOVUpdate" value={{METROOtherCharges.fov}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Handling Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="metroZoneHandlingChargeUpdate" value={{METROOtherCharges.handlingCharges}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ODA<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="metroZoneODAUpdate" value={{METROOtherCharges.oda}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Insurance Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="metroZoneInsuranceChargeUpdate" value={{METROOtherCharges.insuranceCharges}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Covid Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="metroZoneCovidChargeUpdate" value={{METROOtherCharges.covidCharges}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Other Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="metroZoneOtherChargeUpdate" value={{METROOtherCharges.otherCharges}}>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!--ROI Zone Rate -->
+                <div *ngIf="selectFrightType">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <div class="pull-left">ROI ZONE RATE</div>
+                    </div>
+                    <div class="panel-body">
+                      <div class="padd">
+                        <div class="form quick-post">
+                          <div class="form-group">
+                            <input readonly type="hidden"  id="roiZoneId"  name="roiZoneId"  [(ngModel)]="ROYOtherCharges.id" value={{ROYOtherCharges.id}}>
+                            <div class="row" style="margin: auto" *ngIf="flateRate">
+                              <!--<div *ngIf="flateRate">-->
+                              <input readonly type="hidden"  id="roiZoneFlateId"  name="roiFlateId"  [(ngModel)]="roiFlateCharge.id" value={{roiFlateCharge.id}}>
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Weight (Kg)<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="roiZoneBaseWeightUpdate" value={{roiFlateCharge.baseWeight}}>
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="roiZoneBaseRateUpdate" value={{roiFlateCharge.baseRate}}>
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Weight (Kg)<span
+                                  style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="roiZoneIncrementalWeightUpdate" value={{roiFlateCharge.incrementalWeight}}>
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="roiZoneIncrementalRateUpdate" value={{roiFlateCharge.incrementalRate}}>
+                              </div>
+                            </div>
+                            <div *ngIf="slabRate">
+                              <table
+                                class=" table table-striped table-condensed table-bordered table-hover display dataTable"
+                                cellspacing="0" style="width:100%;">
+                                <thead>
+                                <tr class="text-center"
+                                    style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                                  <th>From Weight (Kg)</th>
+                                  <th>To Weight (Kg)</th>
+                                  <th>Rate</th>
+                                  <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let dynamic of dynRoiZone; let i = index;">
+                                  <input readonly type="hidden"  class="form-control"  name="{{dynRoiZone[i].id}}" [(ngModel)]="dynRoiZone[i].id" value={{dynRoiZone[i].id}}> <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynRoiZone[i].fromWeight"
+                                           value={{dynRoiZone[i].fromWeight}}
+                                           name="{{dynRoiZone[i].fromWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynRoiZone[i].toWeight"
+                                           value={{dynRoiZone[i].toWeight}}
+                                           name="{{dynRoiZone[i].toWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynRoiZone[i].rate"
+                                           value={{dynRoiZone[i].rate}}
+                                           name="{{dynRoiZone[i].rate}}">
+                                  </td>
+                                  <td>
+                                    <a class="actionButton " (click)="addTableRowRoi();"
+                                       style="color: #ffffff;border-radius: 6px;background-color: #660000;padding: 5px 4px 4px 4px;">Add</a>
+                                    &nbsp;&nbsp;
+                                    <a class="actionButton removebutton" (click)="deleteFieldValueRoi(i);"
+                                       style=";color: #ffffff;border-radius: 6px;background-color:#88be14;padding: 5px 2px 4px 4px;">DELETE</a>
+                                  </td>
+                                </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">AWB Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="roiZoneAwbChargeUpdate" value={{ROYOtherCharges.awbCharge}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Min Cod Charge<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="roiZoneMinCodChargeUpdate" value={{ROYOtherCharges.minCodCharge}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Cod Charge Percent<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="roiZoneCodChargePercentUpdate" value={{ROYOtherCharges.codChargePercent}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">FSC<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="roiZoneFSCUpdate" value={{ROYOtherCharges.fsc}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">GST<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="roiZoneGSTUpdate" value={{ROYOtherCharges.gst}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ROV Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="roiZoneROVUpdate" value={{ROYOtherCharges.rovCharge}}>
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">FOV<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="roiZoneFOVUpdate" value={{ROYOtherCharges.fov}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Handling Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="roiZoneHandlingChargeUpdate" value={{ROYOtherCharges.handlingCharges}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ODA<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="roiZoneODAUpdate" value={{ROYOtherCharges.oda}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Insurance Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="roiZoneInsuranceChargeUpdate" value={{ROYOtherCharges.insuranceCharges}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Covid Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="roiZoneCovidChargeUpdate" value={{ROYOtherCharges.covidCharges}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Other Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="roiZoneOtherChargeUpdate" value={{ROYOtherCharges.otherCharges}}>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <!--NEJK Zone Rate -->
+                <div *ngIf="selectFrightType">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <div class="pull-left">NEJK ZONE RATE</div>
+                    </div>
+                    <div class="panel-body">
+                      <div class="padd">
+                        <div class="form quick-post">
+                          <div class="form-group">
+                            <input readonly type="hidden"  id="nejkZoneId"  name="nejkZoneId"  [(ngModel)]="NEJKOtherCharges.id" value={{NEJKOtherCharges.id}}>
+                            <div class="row" style="margin: auto" *ngIf="flateRate">
+                              <!--<div *ngIf="flateRate">-->
+                              <input readonly type="hidden"  id="nejkZoneFlateZoneId"  name="nejkFlateZoneId"  [(ngModel)]="nejkFlateCharge.id" value={{nejkFlateCharge.id}}>
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Weight (Kg)<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="nejkZoneBaseWeightUpdate" value={{nejkFlateCharge.baseWeight}}>
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="nejkZoneBaseRateUpdate" value={{nejkFlateCharge.baseRate}}>
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Weight (Kg)<span
+                                  style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="nejkZoneIncrementalWeightUpdate" value={{nejkFlateCharge.incrementalWeight}}>
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="nejkZoneIncrementalRateUpdate" value={{nejkFlateCharge.incrementalRate}}>
+                              </div>
+                            </div>
+                            <div *ngIf="slabRate">
+                              <table
+                                class=" table table-striped table-condensed table-bordered table-hover display dataTable"
+                                cellspacing="0" style="width:100%;">
+                                <thead>
+                                <tr class="text-center"
+                                    style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                                  <th>From Weight(Kg)</th>
+                                  <th>To Weight(Kg)</th>
+                                  <th>Rate</th>
+                                  <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let dynamic of dynNejkZone; let i = index;">
+                                  <input readonly type="hidden"  class="form-control"  name="{{dynNejkZone[i].id}}"  [(ngModel)]="dynNejkZone[i].id" value={{dynNejkZone[i].id}}>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynNejkZone[i].fromWeight"
+                                           value={{dynNejkZone[i].fromWeight}}
+                                           name="{{dynNejkZone[i].fromWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynNejkZone[i].toWeight"
+                                           value={{dynNejkZone[i].toWeight}}
+                                           name="{{dynNejkZone[i].toWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynNejkZone[i].rate"
+                                           value={{dynNejkZone[i].rate}}
+                                           name="{{dynNejkZone[i].rate}}">
+                                  </td>
+                                  <td>
+                                    <a class="actionButton " (click)="addTableRowNejk();"
+                                       style="color: #ffffff;border-radius: 6px;background-color: #660000;padding: 5px 4px 4px 4px;">Add</a>
+                                    &nbsp;&nbsp;
+                                    <a class="actionButton removebutton" (click)="deleteFieldValueNejk(i);"
+                                       style=";color: #ffffff;border-radius: 6px;background-color:#88be14;padding: 5px 2px 4px 4px;">DELETE</a>
+                                  </td>
+                                </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">AWB Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="nejkZoneAwbChargeUpdate" value={{NEJKOtherCharges.awbCharge}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Min Cod Charge<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="nejkZoneMinCodChargeUpdate" value={{NEJKOtherCharges.minCodCharge}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Cod Charge Percent<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="nejkZoneCodChargePercentUpdate" value={{NEJKOtherCharges.codChargePercent}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">FSC<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="nejkZoneFSCUpdate" value={{NEJKOtherCharges.fsc}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">GST<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="nejkZoneGSTUpdate" value={{NEJKOtherCharges.gst}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ROV Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="nejkZoneROVUpdate" value={{NEJKOtherCharges.rovCharge}}>
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">FOV<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="nejkZoneFOVUpdate" value={{NEJKOtherCharges.fov}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Handling Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="nejkZoneHandlingChargeUpdate" value={{NEJKOtherCharges.handlingCharges}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ODA<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="nejkZoneODAUpdate" value={{NEJKOtherCharges.oda}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Insurance Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="nejkZoneInsuranceChargeUpdate" value={{NEJKOtherCharges.insuranceCharges}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Covid Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="nejkZoneCovidChargeUpdate" value={{NEJKOtherCharges.covidCharges}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Other Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="nejkZoneOtherChargeUpdate" value={{NEJKOtherCharges.otherCharges}}>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <!--WITHINREGION Zone Rate -->
+                <div *ngIf="selectFrightType">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <div class="pull-left">WITHIN REGION ZONE RATE</div>
+                    </div>
+                    <div class="panel-body">
+                      <div class="padd">
+                        <div class="form quick-post">
+                          <div class="form-group">
+                            <input readonly type="hidden"  id="withinRegionZoneId"  name="withinRegionZoneId"  [(ngModel)]="WITHINSTATEOtherCharges.id" value={{WITHINSTATEOtherCharges.id}}>
+                            <div class="row" style="margin: auto" *ngIf="flateRate">
+                              <!--<div *ngIf="flateRate">-->
+                              <input readonly type="hidden"  id="withinRegionZoneFlateZoneId"  name="withinFlateZoneId"  [(ngModel)]="withinStateFlateCharge.id" value={{withinStateFlateCharge.id}}>
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Weight (Kg)<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="withinRegionZoneBaseWeightUpdate" value={{withinStateFlateCharge.baseWeight}}>
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Base Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="withinRegionZoneBaseRateUpdate" value={{withinStateFlateCharge.baseRate}}>
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Weight (Kg)<span
+                                  style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="withinRegionZoneIncrementalWeightUpdate" value={{withinStateFlateCharge.incrementalWeight}}>
+                              </div>
+                              <div class="col-lg-3">
+                                <label class="control-label">Incremental Rate<span style="color:red">*</span></label>
+                                <input type="text" class="form-control" id="withinRegionZoneIncrementalRateUpdate" value={{withinStateFlateCharge.incrementalRate}}>
+                              </div>
+                            </div>
+                            <div *ngIf="slabRate">
+                              <table
+                                class=" table table-striped table-condensed table-bordered table-hover display dataTable"
+                                cellspacing="0" style="width:100%;">
+                                <thead>
+                                <tr class="text-center"
+                                    style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                                  <th>From Weight (Kg)</th>
+                                  <th>To Weight (Kg)</th>
+                                  <th>Rate</th>
+                                  <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let dynamic of dynWithinRegionZone; let i = index;">
+                                  <input readonly type="hidden"  class="form-control"  name="{{dynWithinRegionZone[i].id}}"  [(ngModel)]="dynWithinRegionZone[i].id" value={{dynWithinRegionZone[i].id}}>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynWithinRegionZone[i].fromWeight"
+                                           value={{dynWithinRegionZone[i].fromWeight}}
+                                           name="{{dynWithinRegionZone[i].fromWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynWithinRegionZone[i].toWeight"
+                                           value={{dynWithinRegionZone[i].toWeight}}
+                                           name="{{dynWithinRegionZone[i].toWeight}}">
+                                  </td>
+                                  <td>
+                                    <input type="text" class="form-control" [(ngModel)]="dynWithinRegionZone[i].rate"
+                                           value={{dynWithinRegionZone[i].rate}}
+                                           name="{{dynWithinRegionZone[i].rate}}">
+                                  </td>
+                                  <td>
+                                    <a class="actionButton " (click)="addTableWithinRegion();"
+                                       style="color: #ffffff;border-radius: 6px;background-color: #660000;padding: 5px 4px 4px 4px;">Add</a>
+                                    &nbsp;&nbsp;
+                                    <a class="actionButton removebutton" (click)="deleteFieldValueWithinRegion(i);"
+                                       style=";color: #ffffff;border-radius: 6px;background-color:#88be14;padding: 5px 2px 4px 4px;">DELETE</a>
+                                  </td>
+                                </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">AWB Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="withinRegionZoneAwbChargeUpdate" value={{WITHINSTATEOtherCharges.awbCharge}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Min Cod Charge<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="withinRegionZoneMinCodChargeUpdate" value={{WITHINSTATEOtherCharges.minCodCharge}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Cod Charge Percent<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="withinRegionZoneCodChargePercentUpdate" value={{WITHINSTATEOtherCharges.codChargePercent}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">FSC<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="withinRegionZoneFSCUpdate" value={{WITHINSTATEOtherCharges.fsc}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">GST<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="withinRegionZoneGSTUpdate" value={{WITHINSTATEOtherCharges.gst}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ROV Charge<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="withinRegionZoneROVUpdate" value={{WITHINSTATEOtherCharges.rovCharge}}>
+                            </div>
+                          </div>
+                          <div class="row" style="margin: auto">
+                            <div class="col-lg-2">
+                              <label class="control-label">FOV<span style="color:red">*</span></label>
+                              <input type="number" class="form-control" id="withinRegionZoneFOVUpdate" value={{WITHINSTATEOtherCharges.fov}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Handling Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="withinRegionZoneHandlingChargeUpdate" value={{WITHINSTATEOtherCharges.handlingCharges}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">ODA<span style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="withinRegionZoneODAUpdate" value={{WITHINSTATEOtherCharges.oda}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Insurance Charges<span
+                                style="color:red">*</span></label>
+                              <input type="number" class="form-control"  id="withinRegionZoneInsuranceChargeUpdate" value={{WITHINSTATEOtherCharges.insuranceCharges}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Covid Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="withinRegionZoneCovidChargeUpdate" value={{WITHINSTATEOtherCharges.covidCharges}}>
+                            </div>
+                            <div class="col-lg-2">
+                              <label class="control-label">Other Charges<span style="color:red"></span></label>
+                              <input type="number" class="form-control"  id="withinRegionZoneOtherChargeUpdate" value={{WITHINSTATEOtherCharges.otherCharges}}>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="form-group">
+                <div class="col-lg-offset-2 col-lg-9">
+                  <button type="submit" class="btn btn-primary" (click)="onUpdateRecord();">Update</button>&nbsp;&nbsp;&nbsp;
+                  <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                </div>
+              </div>
+            </div>
+
+            <!--Table start hear-->
+
+            <div class="padd table-responsive" [hidden]="!isDisplay">
+              <table  datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                <thead>
+                <tr class="text-center" style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                  <th>ID</th>
+                  <th>Rate Card Code</th>
+                  <th>Rate Card Name</th>
+                  <th>Freight Type</th>
+                  <th>Courier ID</th>
+                  <th>Service Provider ID</th>
+                  <th>Rate Card Type</th>
+                  <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of domasticRateCards">
+                  <td>{{ item.id }}</td>
+                  <td>{{ item.rateCardCode}}</td>
+                  <td>{{ item.rateCardName}}</td>
+                  <td>{{ item.freightType }}</td>
+                  <td>{{ item.courierCode }}</td>
+                  <td>{{ item.serviceProviderCode }}</td>
+                  <td>{{item.rateCardTypeCode}}</td>
+                  <td>
+                    <a href="javascript:;" (click)="updateRecords(item.id)"><i class="fa fa-pencil" title="Edit" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;<a href="javascript:;" (click)="deleteById(item.id)"><i class="fa fa-trash-o" title="Delete" aria-hidden="true"></i></a>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>

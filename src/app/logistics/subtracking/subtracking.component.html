@@ -1,0 +1,278 @@
+<section id="main-content">
+    <section class="wrapper">
+    <!--overview start-->
+
+    <div class="row">
+      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Awb Tracking
+            </div>
+            <div class="clearfix"></div>
+          </div>
+
+          <div class="padd" *ngIf="isAWB">
+            <div class="form quick-post">
+              <div class="form-group" *ngFor="let awbNumber of saleOrder;">
+
+                <div class="col-sm-12" *ngIf="awbNumber.found==true">
+                  <div class="row">
+                    <div class="col-sm-2"><strong>ORDER NO.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.id}}</div>
+                    <div class="col-sm-2"><strong>ORDER DATE.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.orderDate | date:'yyyy-MM-dd HH:mm:ss' }}</div>
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-2"><strong>PACKET STATUS.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.currentStatus.statusName}}</div>
+                    <div class="col-sm-2"><strong>ORDER FLOW TYPE.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.orderFlowType}}</div>
+                    <!--<div class="col-sm-2"><strong>COURIER NAME.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.courierCode}}</div>-->
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+
+                  </div>
+                 <!-- <div class="row">
+                    <div class="col-sm-2"><strong>SOURCE.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.sourceBranchCode}}</div>
+                    <div class="col-sm-2"><strong>DESTINATION.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.destinationBranchCode}}</div>
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+
+                  </div>-->
+                  <!--<div class="row">
+                    <div class="col-sm-2"><strong>CURRENT BRANCH.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.currentBranchCode}}</div>
+                    <div class="col-sm-2"><strong>NEXT BRANCH.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.nextBranchCode}}</div>
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+
+                  </div>-->
+                  <div class="row">
+                    <div class="col-sm-2"><strong>CLIENT NAME.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.clientCode}}</div>
+                    <div class="col-sm-2"><strong>PAYMENT TYPE.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.paymentType}}</div>
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-2"><strong>PRODUCT NAME.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.productName}}</div>
+                    <div class="col-sm-2"><strong>DELEVERD DATE.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.deliveredDate | date:'yyyy-MM-dd HH:mm:ss' }}</div>
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-2"><strong>CURRENT STATUS.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.currentStatus.statusName}}</div>
+                    <div class="col-sm-2"><strong>ORDER SOURCE TYPE.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.orderSourceType}}</div>
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-2"><strong>COURIER NAME.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.courierCode}}</div>
+                    <!--<div class="col-sm-2"><strong>ORDER FLOW TYPE.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.orderFlowType}}</div>-->
+                    <div class="col-sm-2"><strong>COURIER CODE.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.courierCode}}</div>
+                    <!--<div class="col-sm-2"><strong>SOURCE BRANCH CODE.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.sourceBranchCode}}</div>-->
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                  </div>
+
+                  <!--<div class="row">
+                    <div class="col-sm-3"><strong>CURRENT BRANCH CODE.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.currentBranchCode}}</div>
+                    <div class="col-sm-3"><strong>NEXT BRANCH CODE.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.extBranchCode}}</div>
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                  </div>-->
+
+                  <!--<div class="row">
+                    <div class="col-sm-2"><strong>DESTINATION BRANCH CODE.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.destinationBranchCode}}</div>
+                    <div class="col-sm-2"><strong>COURIER CODE.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.courierCode}}</div>
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                  </div>-->
+
+                  <div class="row">
+                    <div class="col-sm-2"><strong>COURIER AWB NUMBER.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.courierAWBNumber}}</div>
+                    <div class="col-sm-2"><strong>PRODUCT SKU.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.productSKU}}</div>
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-2"><strong>PRODUCT NAME.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.productName}}</div>
+                    <div class="col-sm-2"><strong>PRODUCT QUANTITY.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.productQuantity}}</div>
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-2"><strong>PRODUCT PRICE.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.productPrice}}</div>
+                    <div class="col-sm-2"><strong>COD AMOUNT.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.codAmount}}</div>
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-2"><strong>PAYMENT TYPE.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.paymentType}}</div>
+                    <div class="col-sm-2"><strong>CLIENT CODE.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.clientCode}}</div>
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-2"><strong>CLIENT ORDER ID.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.clientOrderId}}</div>
+                    <div class="col-sm-2"><strong>ORDER TYPE.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.orderType}}</div>
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                  </div>
+
+                  <!--<div class="row">
+                    <div class="col-sm-2"><strong>PICKUP LOCATION ID.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.pickupLocationId}}</div>
+                    <div class="col-sm-2"><strong>EWAY BILL.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.ewaybill}}</div>
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                  </div>
+
+
+                  <div class="row">
+                    <div class="col-sm-2"><strong>DRS ATTEMPTED COUNT.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.drsAttemptedCount}}</div>
+                    <div class="col-sm-2"><strong>DELIVERY ATTEMPTED REASION.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.deliveryAttemptedReason}}</div>
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                  </div>-->
+
+                  <div class="row">
+                    <div class="col-sm-2"><strong>RTO REASON.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.rtoReason}}</div>
+                    <div class="col-sm-2"><strong>DELIVERED DATE.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.deliveredDate | date:'yyyy-MM-dd HH:mm:ss' }}</div>
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-2"><strong>ORDER DATE.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.orderDate}}</div>
+                    <div class="col-sm-2"><strong>SCAN DATE.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.scanDate}}</div>
+
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                  </div>
+
+                  <div class="row">
+                    <div class="col-sm-2"><strong>ZONE TYPE.</strong></div>
+                    <div class="col-sm-4"> {{awbNumber.zoneType}}</div>
+                    <div class="col-sm-2"><strong>DELIVERY CHARGE.</strong></div>
+                    <div class="col-sm-4 "> {{awbNumber.deliveryCharge}}</div>
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                  </div>
+                  <div class="row row-bg-color">
+                    <div class="col-sm-6">
+                      <div class="table-responsive">
+                        <table class="table table-striped table-condensed table-bordered table-hover display dataTable no-footer" cellspacing="0" style="width: 100%;">
+                          <tbody><tr style="font-size: 15px;font-weight: 600;"><td colspan="2">Sender Details</td></tr>
+                          <tr><td class="tdWidth">Name</td><td>{{awbNumber.senderName}}</td></tr>
+                          <tr><td class="tdWidth">Contact</td><td>{{awbNumber.senderMobileNumber}}</td></tr>
+                          <tr><td class="tdWidth">Alt Number</td><td>{{awbNumber.senderAltNumber}}</td></tr>
+                          <tr><td class="tdWidth">Email</td><td>{{awbNumber.senderEmail}}</td></tr>
+                          <tr><td class="tdWidth">Address</td><td>{{awbNumber.senderAddress}}</td></tr>
+                          <tr><td class="tdWidth">Landmark</td><td>{{awbNumber.senderLandmark}}</td></tr>
+                          <tr><td class="tdWidth">State</td><td>{{awbNumber.senderState}}</td></tr>
+                          <tr><td class="tdWidth">City</td><td>{{awbNumber.senderCity}}</td></tr>
+                          <tr><td class="tdWidth">PinCode</td><td>{{awbNumber.senderPinCode}}</td></tr>
+                          </tbody></table>
+
+
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="table-responsive">
+                        <table class="table table-striped table-condensed table-bordered table-hover display dataTable no-footer" cellspacing="0" style="width: 100%;">
+                          <tbody><tr style="font-size: 15px;font-weight: 600;"><td colspan="2">Receiver Details</td></tr>
+                          <tr><td class="tdWidth">Name</td><td>{{awbNumber.consigneeName}}</td></tr>
+                          <tr><td class="tdWidth">Contact</td><td>{{awbNumber.consigneeMobileNumber}}</td></tr>
+                          <tr><td class="tdWidth">Alt Number</td><td>{{awbNumber.consigneeAlternateNumber}}</td></tr>
+                          <tr><td class="tdWidth">Email</td><td>{{awbNumber.consigneeEmailId}}</td></tr>
+                          <tr><td class="tdWidth">Address</td><td>{{awbNumber.consigneeAddress}}</td></tr>
+                          <tr><td class="tdWidth">Landmark</td><td>{{awbNumber.consigneeLandmark}}</td></tr>
+                          <tr><td class="tdWidth">State</td><td>{{awbNumber.consigneeState}}</td></tr>
+                          <tr><td class="tdWidth">City</td><td>{{awbNumber.consigneeCity}}</td></tr>
+                          <tr><td class="tdWidth">PinCode</td><td>{{awbNumber.consigneePinCode}}</td></tr>
+                          </tbody></table>
+
+                      </div>
+                    </div>
+                  </div>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <div class="row table-responsive" style="margin: auto">
+                    <table  class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="margin: auto">
+                      <thead>
+                      <tr class="text-center" style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                        <th>STATUS DATE</th>
+                        <th>STATUS</th>
+                        <th>UPDATE BY</th>
+                        <th>REMARKS</th>
+
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let ph of awbpacketHistory">
+                        <td>{{ph.date | date:'yyyy-MM-dd HH:mm:ss' }}</td>
+                        <td>{{ph.statusName}}</td>
+                        <td>{{ph.createdByName}}</td>
+                        <td>{{ph.remarks}}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                </div>
+                <div *ngIf="awbNumber.found!=true">
+                  <div class="col-sm-12" id="errorList"><br>
+                    <div style="font-size: 16px;color:red;">{{awbNumber.msg}}</div>
+                    <br>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+      </div>
+      </div>
+    </div>
+  </section>
+</section>

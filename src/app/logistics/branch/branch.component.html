@@ -1,0 +1,433 @@
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <!-- application loader-->
+      <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" type = "ball-scale-multiple" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Branch &nbsp;&nbsp;&nbsp;&nbsp;
+              <!--<button *ngIf="isDisplay" class="btn btn-default"> <a href="#"  (click)="addNew()">Add  Record</a></button>&nbsp;-->
+              <BUTTON *ngIf="isDisplay" class="btn btn-primary" (click)="addNew()">Add Record</BUTTON>&nbsp;&nbsp;&nbsp;&nbsp;
+              <BUTTON *ngIf="isDisplay" class="btn btn-primary" (click)="onDownloadBranchReport()">Download Report</BUTTON>&nbsp;&nbsp;&nbsp;&nbsp;
+              <BUTTON *ngIf="isDisplay" class="btn btn-primary" (click)="excalUpload()">Bulk Upload</BUTTON>&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <!--Bulk upload form start hear-->
+            <div class="padd" *ngIf="isUpload">
+              <div class="form quick-post">
+                <!-- Edit profile form (not working)-->
+                <form class="form-horizontal" [formGroup]="form" (ngSubmit)="onBulkUpload()">
+                  <!-- Title -->
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-lg-2 col-lg-offset-1"> <span style="color:green;">Total Records = {{responseBody.totalRecord}}</span> </div>
+                      <div class="col-lg-2"> <span style="color:green;">Success Records = {{responseBody.successRecord}}</span></div>
+                      <div class="col-lg-3"> <span style="color:red;">Error Records = {{responseBody.errorRecord}}</span>
+                      </div>
+                      <div class="col-lg-4">
+                        <div class="row">
+                          <div class="col-lg-6">
+                            <button [class.col-lg-6]="" type="button" class="btn btn-primary" (click)="downloadSuccessFile()">Download Success File</button>
+                          </div>
+                          <div class="col-lg-6">
+                            <button type="button" class="btn btn-danger" (click)="downloadErrorFile()">Download Error File</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div><br>
+                    <!--Progress Bar start hear-->
+                    <div class="row" *ngIf="isUploadStart">
+                      <div class="col-lg-10 col-lg-offset-1">
+                        <div class="progress" style="height: 20px;">
+                          <div class="progress-bar progress-bar-striped progress-bar-animated" style="{{'width:' + uploadPresentage +'%'}}; height: 20px;"> {{uploadPresentage+'%'}}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--Progress Bar end hear-->
+                    <div class="row">
+                      <div class="col-lg-2 col-lg-offset-1">
+                        <div class="row">
+                          <div class="col-lg-3">
+                            <div><label class="control-label" for="title">isUpdate</label></div>
+                          </div>
+                          <div class="col-lg-3 col-lg-offset-1">
+                            <input class="form-check-input" type="checkbox" value="false" formControlName="isUpdate"
+                                   (change)="isCheck('UPDATE')">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-lg-4 ">
+                        <label class="control-label" for="title">Select Upload File<span
+                          style="color:red">*</span></label>
+                        <input type="file" class="form-control" name="file" (change)="onFileChange($event)">
+                      </div>
+                      <div class="col-lg-4"><br>
+                        <div class="row">
+                          <div class="col-lg-6">
+                            <button type="submit" class="btn btn-primary" [disabled]="isUploadButtonDisabled">Upload</button>
+                          </div>
+                          <div class="col-lg-6">
+                            <button type="button" class="btn btn-primary" (click)="downloadTemplate()">Download Template
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <hr style="width:100%;text-align:left;margin-left:0">
+                    <div class="form-group">
+                      <div class="col-lg-offset-4 col-lg-7">
+                        <!-- <button type="button" (click)="cancelButtonAction()" class="btn btn-close">Cancel</button>-->
+                        <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                      </div>
+                    </div>
+
+                  </div>
+                </form>
+
+              </div>
+
+            </div>
+            <!--Add form start hear-->
+            <div class="padd" *ngIf="isAdd">
+              <div class="form quick-post">
+                <form class="form-horizontal" [formGroup]="branchForm" (ngSubmit)="onSubmit()" >
+                  <div class="form-group">
+
+                    <div class="row" style="margin: auto">
+                        <div class="col-lg-4">
+                          <label class="control-label" >Branch Name<span style="color:red">*</span></label>
+                          <div *ngIf="branchForm.controls['name'].touched && branchForm.controls['name'].invalid" class="alert-danger">
+                            <div *ngIf="branchForm.controls['name'].errors && branchForm.controls['name'].errors.required">Branch Name is required.</div></div>
+                          <input type="text" class="form-control"  formControlName="name">
+                        </div>
+                        <div class="col-lg-4">
+                          <label class="control-label" >Branch ID<span style="color:red">*</span></label>
+                          <div *ngIf="branchForm.controls['branchCode'].touched && branchForm.controls['branchCode'].invalid" class="alert-danger">
+                            <div *ngIf="branchForm.controls['branchCode'].errors && branchForm.controls['branchCode'].errors.required">Branch Code is required.</div></div>
+                          <input type="text" class="form-control"  formControlName="branchCode">
+                        </div>
+                        <div class="col-lg-4">
+                          <label class="control-label" >Address<span style="color:red">*</span></label>
+                          <div *ngIf="branchForm.controls['address'].touched && branchForm.controls['address'].invalid" class="alert-danger">
+                            <div *ngIf="branchForm.controls['address'].errors && branchForm.controls['address'].errors.required">Address is required.</div></div>
+                          <input type="text" class="form-control"  formControlName="address">
+                        </div>
+                      </div>
+
+                    <div class="row" style="margin: auto" >
+                      <div class="col-lg-4">
+                        <label class="control-label" >Mobile Number<span style="color:red">*</span></label>
+                        <div *ngIf="branchForm.controls['mobileNo'].touched && branchForm.controls['mobileNo'].invalid" class="alert-danger">
+                          <div *ngIf="branchForm.controls['mobileNo'].errors && branchForm.controls['mobileNo'].errors.required">Mobile is required.</div>
+                          <div *ngIf="branchForm.controls['mobileNo'].errors.pattern || branchForm.controls['mobileNo'].errors.maxlength || branchForm.controls['mobileNo'].errors.minlength">Phone number must be at least 10 numbers</div>
+                        </div>
+                        <input type="text" class="form-control"  formControlName="mobileNo" (keypress)="keyPress($event)">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Email<span style="color:red">*</span></label>
+                        <div *ngIf="branchForm.controls['emailId'].touched && branchForm.controls['emailId'].invalid" class="alert-danger">
+                          <div *ngIf="branchForm.controls['emailId'].errors && branchForm.controls['emailId'].errors.required">Email is required.</div>
+                          <div *ngIf="branchForm.controls['emailId'].errors?.pattern" class="text-danger">Please provide a valid email address</div>
+                        </div>
+                        <input type="text" class="form-control"  formControlName="emailId">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Pincode<span style="color:red">*</span></label>
+                        <div *ngIf="branchForm.controls['pincode'].touched && branchForm.controls['pincode'].invalid" class="alert-danger">
+                          <div *ngIf="branchForm.controls['pincode'].errors && branchForm.controls['pincode'].errors.required">Pincode is required.</div>
+                          <div *ngIf="branchForm.controls['pincode'].errors.pattern || branchForm.controls['pincode'].errors.maxlength || branchForm.controls['pincode'].errors.minlength">Pincode must be at least 6 numbers</div>
+                        </div>
+                        <input type="text" class="form-control" formControlName="pincode" maxlength="6" (keypress)="keyPress($event)" (keyup)="getCityStateCountryByPincode(false)">
+                      </div>
+                    </div>
+
+                    <div class="row" style="margin: auto">
+                      <div class="col-lg-4">
+                        <label class="control-label" >City<span style="color:red">*</span></label>
+                        <div *ngIf="branchForm.controls['city'].touched && branchForm.controls['city'].invalid" class="alert-danger">
+                          <div *ngIf="branchForm.controls['city'].errors && branchForm.controls['city'].errors.required">City Name is required.</div></div>
+                        <input type="text" readonly class="form-control"  formControlName="city" [(ngModel)]="pincodeDetails.city" value="{{pincodeDetails.city}}">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >State<span style="color:red">*</span></label>
+                        <div *ngIf="branchForm.controls['state'].touched && branchForm.controls['state'].invalid" class="alert-danger">
+                          <div *ngIf="branchForm.controls['state'].errors && branchForm.controls['state'].errors.required">State is required.</div></div>
+                        <input type="text" readonly class="form-control"  formControlName="state" [(ngModel)]="pincodeDetails.state" value="{{pincodeDetails.state}}">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Country<span style="color:red">*</span></label>
+                        <div *ngIf="branchForm.controls['country'].touched && branchForm.controls['country'].invalid" class="alert-danger">
+                          <div *ngIf="branchForm.controls['country'].errors && branchForm.controls['country'].errors.required">Country is required.</div></div>
+                        <input type="text" readonly class="form-control"  formControlName="country" [(ngModel)]="pincodeDetails.country" value="{{pincodeDetails.country}}">
+                      </div>
+                    </div>
+
+
+                    <div class="row" style="margin: auto">
+                      <div class="col-lg-4">
+                        <label class="control-label" for="title">Parent Branch ID</label>
+                          <select class="form-control" formControlName="parentBranchId">
+                            <option value="">- Choose Parent Branch -</option>
+                            <option *ngFor="let item of branchList; let i = index" [value]="item.branchCode" >
+                              {{item.name}}
+                            </option>
+                          </select>
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >LatLong</label>
+                        <input type="text" class="form-control"  formControlName="latLong">
+                      </div>
+                      <div class="col-lg-4"><br>
+                        <div class="row">
+                          <div class="col-lg-7">
+                            <label class="control-label " for="title">Destination Bagging Allow</label>
+                          </div><br>
+                          <div class="col-lg-5">
+                            <input class="form-check-input" type="checkbox" value="false"  formControlName="destinationBaggingAllow" (change)="isCheck('DestinationBaggingAllow')">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row" style="margin: auto">
+                      <div class="col-lg-4"><br>
+                        <div class="row">
+                          <div class="col-lg-6">
+                            <label class="control-label " for="title">Manul Manifest Allow</label>
+                          </div><br>
+                          <div class="col-lg-6">
+                            <input class="form-check-input" type="checkbox" value="false"  formControlName="manulManifestAllow" (change)="isCheck('ManulManifestAllow')">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="col-lg-offset-4 col-lg-7">
+                      <button type="submit" class="btn btn-primary"[disabled]="!branchForm.valid">Save</button>&nbsp;&nbsp;&nbsp;
+                      <button type="reset" class="btn btn-default">Reset</button>&nbsp;&nbsp;&nbsp;
+                      <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!--Update form start hear-->
+            <div class="padd" *ngIf="isUpdate">
+              <div class="form quick-post">
+                <form class="form-horizontal" [formGroup]="updateBranchForm" (ngSubmit)="onUpdateSubmit()">
+                  <div *ngIf="singleRecord.id">
+                    <div class="form-group">
+                      <!--Object id is hidden-->
+                      <div class="row">
+                        <input readonly type="hidden"  [(ngModel)]="singleRecord.id" formControlName="id" value={{singleRecord.id}}>
+                      </div><br>
+
+                      <div class="row" style="margin: auto">
+                        <div class="col-lg-4">
+                          <label class="control-label" >Branch Name<span style="color:red">*</span></label>
+                          <div *ngIf="updateBranchForm.controls['name'].touched && updateBranchForm.controls['name'].invalid" class="alert-danger">
+                            <div *ngIf="updateBranchForm.controls['name'].errors && updateBranchForm.controls['name'].errors.required">Branch Name is required.</div></div>
+                          <input type="text" class="form-control"  formControlName="name" [(ngModel)]="singleRecord.name" value={{singleRecord.name}}>
+                        </div>
+                        <div class="col-lg-4">
+                          <label class="control-label" >Branch Id<span style="color:red">*</span></label>
+                          <div *ngIf="updateBranchForm.controls['branchCode'].touched && updateBranchForm.controls['branchCode'].invalid" class="alert-danger">
+                            <div *ngIf="updateBranchForm.controls['branchCode'].errors && updateBranchForm.controls['branchCode'].errors.required">Branch Code is required.</div></div>
+                          <input type="text" class="form-control"  formControlName="branchCode" [(ngModel)]="singleRecord.branchCode" value={{singleRecord.branchCode}}>
+                        </div>
+                        <div class="col-lg-4">
+                          <label class="control-label" >Address<span style="color:red">*</span></label>
+                          <div *ngIf="updateBranchForm.controls['address'].touched && updateBranchForm.controls['address'].invalid" class="alert-danger">
+                            <div *ngIf="updateBranchForm.controls['address'].errors && updateBranchForm.controls['address'].errors.required">Address is required.</div></div>
+                          <input type="text" class="form-control"  formControlName="address" [(ngModel)]="singleRecord.address" value={{singleRecord.address}}>
+                        </div>
+                      </div>
+
+                      <div class="row" style="margin: auto" >
+                        <div class="col-lg-4">
+                          <label class="control-label" >Mobile No.<span style="color:red">*</span></label>
+                          <div *ngIf="updateBranchForm.controls['mobileNo'].touched && updateBranchForm.controls['mobileNo'].invalid" class="alert-danger">
+                            <div *ngIf="updateBranchForm.controls['mobileNo'].errors && updateBranchForm.controls['mobileNo'].errors.required">Mobile is required.</div>
+                            <div *ngIf="updateBranchForm.controls['mobileNo'].errors.pattern || updateBranchForm.controls['mobileNo'].errors.maxlength || updateBranchForm.controls['mobileNo'].errors.minlength">Phone number must be at least 10 numbers</div>
+                          </div>
+                          <input type="text" class="form-control"  formControlName="mobileNo" (keypress)="keyPress($event)" [(ngModel)]="singleRecord.mobileNo" value={{singleRecord.mobileNo}}>
+                        </div>
+                        <div class="col-lg-4">
+                          <label class="control-label" >Email Id<span style="color:red">*</span></label>
+                          <div *ngIf="updateBranchForm.controls['emailId'].touched && updateBranchForm.controls['emailId'].invalid" class="alert-danger">
+                            <div *ngIf="updateBranchForm.controls['emailId'].errors && updateBranchForm.controls['emailId'].errors.required">Email is required.</div>
+                            <div *ngIf="updateBranchForm.controls['emailId'].errors?.pattern" class="text-danger">Please provide a valid email address</div>
+                          </div>
+                          <input type="text" class="form-control"  formControlName="emailId" [(ngModel)]="singleRecord.emailId" value={{singleRecord.emailId}}>
+                        </div>
+                        <div class="col-lg-4">
+                          <label class="control-label" >PinCode<span style="color:red">*</span></label>
+                          <div *ngIf="updateBranchForm.controls['pincode'].touched && updateBranchForm.controls['pincode'].invalid" class="alert-danger">
+                            <div *ngIf="updateBranchForm.controls['pincode'].errors && updateBranchForm.controls['pincode'].errors.required">Pincode is required.</div>
+                            <div *ngIf="updateBranchForm.controls['pincode'].errors.pattern || updateBranchForm.controls['pincode'].errors.maxlength || updateBranchForm.controls['pincode'].errors.minlength">Pincode must be at least 6 numbers</div>
+                          </div>
+                          <input type="text" class="form-control"  formControlName="pincode" (keypress)="keyPress($event)" [(ngModel)]="singleRecord.pincode" value={{singleRecord.pincode}} (keyup)="getCityStateCountryByPincode(true)">
+                        </div>
+                      </div>
+
+                      <div class="row" style="margin: auto">
+                        <div class="col-lg-4">
+                          <label class="control-label" >City<span style="color:red">*</span></label>
+                          <div *ngIf="updateBranchForm.controls['city'].touched && updateBranchForm.controls['city'].invalid" class="alert-danger">
+                            <div *ngIf="updateBranchForm.controls['city'].errors && updateBranchForm.controls['city'].errors.required">City Name is required.</div></div>
+                          <input type="text" readonly class="form-control"  formControlName="city" [(ngModel)]="pincodeDetails.city" value="{{pincodeDetails.city}}">
+                        </div>
+                        <div class="col-lg-4">
+                          <label class="control-label" >State<span style="color:red">*</span></label>
+                          <div *ngIf="updateBranchForm.controls['state'].touched && updateBranchForm.controls['state'].invalid" class="alert-danger">
+                            <div *ngIf="updateBranchForm.controls['state'].errors && updateBranchForm.controls['state'].errors.required">State is required.</div></div>
+                          <input type="text" readonly class="form-control"  formControlName="state" [(ngModel)]="pincodeDetails.state" value="{{pincodeDetails.state}}">
+                        </div>
+                        <div class="col-lg-4">
+                          <label class="control-label" >Country<span style="color:red">*</span></label>
+                          <div *ngIf="updateBranchForm.controls['country'].touched && updateBranchForm.controls['country'].invalid" class="alert-danger">
+                            <div *ngIf="updateBranchForm.controls['country'].errors && updateBranchForm.controls['country'].errors.required">Country is required.</div></div>
+                          <input type="text" readonly class="form-control"  formControlName="country" [(ngModel)]="pincodeDetails.country" value="{{pincodeDetails.country}}">
+                        </div>
+                      </div>
+
+
+                      <div class="row" style="margin: auto">
+                        <div class="col-lg-4">
+                          <label class="control-label" for="title">Parent Branch Id</label>
+                          <select class="form-control" formControlName="parentBranchId">
+                            <option value="">- Choose Parent Branch -</option>
+                            <option *ngFor="let item of branchList; let i = index" [value]="item.branchCode" >
+                              {{item.name}}
+                            </option>
+                          </select>
+                        </div>
+                        <div class="col-lg-4">
+                          <label class="control-label" >LatLong</label>
+                          <input type="text" class="form-control"  formControlName="latLong" [(ngModel)]="singleRecord.latLong" value={{singleRecord.latLong}}>
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="control-label" >Active<span style="color:red"></span></label>
+                            <div *ngIf="updateBranchForm.controls['active'].touched && updateBranchForm.controls['active'].invalid" class="alert-danger">
+                              <div *ngIf="updateBranchForm.controls['active'].errors && updateBranchForm.controls['active'].errors.required">Display Name is required.</div></div>
+                            <input type="text" class="form-control" id="active" formControlName="active" [(ngModel)]="singleRecord.active" value={{singleRecord.active}}>
+                        </div>
+                      </div>
+
+                      <div class="row" style="margin: auto">
+
+                        <div class="col-lg-4"><br>
+                          <div class="row">
+                            <div class="col-lg-7">
+                              <label class="control-label " for="title">Destination Bagging Allow</label>
+                            </div><br>
+                            <div class="col-lg-5">
+                              <input class="form-check-input" type="checkbox" value="false"  formControlName="destinationBaggingAllow" [(ngModel)]="singleRecord.destinationBaggingAllow" value={{singleRecord.destinationBaggingAllow}} (change)="isCheck('DestinationBaggingAllow')">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-lg-4"><br>
+                          <div class="row">
+                            <div class="col-lg-6">
+                              <label class="control-label " for="title">Manul Manifest Allow</label>
+                            </div><br>
+                            <div class="col-lg-6">
+                              <input class="form-check-input" type="checkbox" value="false"  formControlName="manulManifestAllow" [(ngModel)]="singleRecord.manulManifestAllow" value={{singleRecord.manulManifestAllow}} (change)="isCheck('ManulManifestAllow')">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                      <div class="form-group">
+                        <div class="col-lg-offset-2 col-lg-9">
+                          <button type="submit" class="btn btn-primary">update</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                        </div>
+                      </div>
+                    </div>
+                </form>
+              </div>
+            </div>
+            <!--Table start hear-->
+            <div class="padd table-responsive" [hidden]="!isDisplay">
+              <table  datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                <thead>
+                <tr class="text-center" style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Branch Id</th>
+                  <th>Mobile No.</th>
+                  <th>Email Id</th>
+                  <th>Parent Branch Id</th>
+                  <th>Active</th>
+                  <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of branchs">
+                  <td>{{ item.id }}</td>
+                  <td>{{ item. name}}</td>
+                  <td>{{ item.branchCode }}</td>
+                  <td>{{ item.mobileNo }}</td>
+                  <td>{{ item.emailId }}</td>
+                  <td>{{ item.parentBranchId}}</td>
+                  <td>{{ item.active }}</td>
+                  <td>
+                    <a href="javascript:;" (click)="updateRecords(item.id)"><i class="fa fa-pencil" title="Edit" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;<a href="javascript:;" (click)="deleteRecords(item.id)"><i class="fa fa-trash-o" title="Delete" aria-hidden="true"></i></a>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+            <!--<div class="padd" [hidden]="!isDisplay">
+              <table datatable [dtOptions]="dtOptions"  [dtTrigger]="dtTrigger" class=" table table-striped table-condensed table-bordered table-hover display dataTable" cellspacing="0" style="width:100%;">
+                <thead>
+                <tr class="text-center" style="background-color: #2f3e4c; color: #ffffff; height: 40px;">
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Branch Id</th>
+                  <th>Mobile No.</th>
+                  <th>Email Id</th>
+                  <th>Parent Branch Id</th>
+                  <th>Active</th>
+                  <th>Action</th>
+                  &lt;!&ndash;<th>update</th>
+                  <th>delete</th>&ndash;&gt;
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of allRecords">
+                  <td>{{ item.id }}</td>
+                  <td>{{ item. name}}</td>
+                  <td>{{ item.branchId }}</td>
+                  <td>{{ item.mobileNo }}</td>
+                  <td>{{ item.emailId }}</td>
+                  <td>{{ item.parentBranchId }}</td>
+                  <td>{{ item.active }}</td>
+                  <td>
+                    <a href="javascript:;" (click)="updateRecords(item.id)"><i class="fa fa-pencil" title="Edit" aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;<a href="javascript:;" (click)="deleteRecords(item.id)"><i class="fa fa-trash-o" title="Delete" aria-hidden="true"></i></a>
+                  </td>
+                  &lt;!&ndash;<td><a href="#"  (click)="updateRecords(item.id)" > <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a></td>
+                  <td><a href="#"  (click)="deleteRecords(item.id)" >click to delete</a></td>&ndash;&gt;
+                </tr>
+                </tbody>
+              </table>
+            </div>-->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</section>

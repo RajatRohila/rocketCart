@@ -1,0 +1,280 @@
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <!--Loader start hear-->
+      <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "large" color = "#fff" type = "ball-scale-multiple" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">Upload Single Order</div>
+
+            <div class="clearfix"></div>
+          </div>
+
+          <div class="panel-body">
+            <div class="padd">
+              <div class="form quick-post">
+
+                <!-- Edit profile form (not working)-->
+                <form class="form-horizontal" [formGroup]="saleOrderForm" (ngSubmit)="onSubmit()" >
+                  <!-- Title -->
+                  <div class="form-group">
+
+                    <div _ngcontent-asr-c147="" class="p-3 mb-2 bg-dark text-white active"
+                         style="background-color: #2f3e4c; color: #ffffff; height: 40px;"> SENDER DETAILS <a _ngcontent-asr-c147=""
+                           target="_blank" class="text-white" ng-reflect-target="_blank"></a></div>
+
+                    <div class="row" style="margin: auto">
+                      <div class="col-lg-4">
+                        <label class="control-label" >Sender Name<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['senderName'].touched && saleOrderForm.controls['senderName'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['senderName'].errors && saleOrderForm.controls['senderName'].errors.required">Sender Name is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="senderName">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Sender Mobile Number<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['senderMobileNumber'].touched && saleOrderForm.controls['senderMobileNumber'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['senderMobileNumber'].errors && saleOrderForm.controls['senderMobileNumber'].errors.required">Mobile is required.</div>
+                          <div *ngIf="saleOrderForm.controls['senderMobileNumber'].errors.pattern || saleOrderForm.controls['senderMobileNumber'].errors.maxlength || saleOrderForm.controls['senderMobileNumber'].errors.minlength">Phone number must be at least 10 numbers</div>
+                        </div>
+                        <input type="text" class="form-control"  formControlName="senderMobileNumber" (keypress)="keyPress($event)">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Sender Alternate Number<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['senderAltNumber'].touched && saleOrderForm.controls['senderAltNumber'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['senderAltNumber'].errors && saleOrderForm.controls['senderAltNumber'].errors.required">Mobile is required.</div>
+                          <div *ngIf="saleOrderForm.controls['senderAltNumber'].errors.pattern || saleOrderForm.controls['senderAltNumber'].errors.maxlength || saleOrderForm.controls['senderAltNumber'].errors.minlength">Phone number must be at least 10 numbers</div>
+                        </div>
+                        <input type="text" class="form-control"  formControlName="senderAltNumber" (keypress)="keyPress($event)">
+                      </div>
+                    </div>
+
+                    <div class="row" style="margin: auto">
+                      <div class="col-lg-4">
+                        <label class="control-label" >Sender Email<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['senderEmail'].touched && saleOrderForm.controls['senderEmail'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['senderEmail'].errors && saleOrderForm.controls['senderEmail'].errors.required">Email is required.</div>
+                          <div *ngIf="saleOrderForm.controls['senderEmail'].errors?.pattern" class="text-danger">Please provide a valid email address</div>
+                        </div>
+                        <input type="text" class="form-control"  formControlName="senderEmail">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Sender Pincode<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['senderPinCode'].touched && saleOrderForm.controls['senderPinCode'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['senderPinCode'].errors && saleOrderForm.controls['senderPinCode'].errors.required">Pincode is required.</div>
+                          <div *ngIf="saleOrderForm.controls['senderPinCode'].errors.pattern || saleOrderForm.controls['senderPinCode'].errors.maxlength || saleOrderForm.controls['senderPinCode'].errors.minlength">Pincode must be at least 6 numbers</div>
+                        </div>
+                        <input type="text" class="form-control"  formControlName="senderPinCode" (keypress)="keyPress($event)">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Sender Address<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['senderAddress'].touched && saleOrderForm.controls['senderAddress'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['senderAddress'].errors && saleOrderForm.controls['senderAddress'].errors.required">Sender Address is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="senderAddress">
+                      </div>
+                    </div>
+
+                    <hr style="height:1px;border:none;color:#333;background-color:#333;" />
+
+                    <div _ngcontent-asr-c147="" class="p-3 mb-2 bg-dark text-white active"
+                         style="background-color: #2f3e4c; color: #ffffff; height: 40px;"> CONSIGNEE DETAILS <a _ngcontent-asr-c147=""
+                             target="_blank" class="text-white" ng-reflect-target="_blank"></a></div>
+
+                    <div class="row" style="margin: auto">
+                      <div class="col-lg-4">
+                        <label class="control-label" >Consignee Name<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['consigneeName'].touched && saleOrderForm.controls['consigneeName'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['consigneeName'].errors && saleOrderForm.controls['consigneeName'].errors.required">Consignee Name is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="consigneeName">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Consignee Mobile Number<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['consigneeMobileNumber'].touched && saleOrderForm.controls['consigneeMobileNumber'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['consigneeMobileNumber'].errors && saleOrderForm.controls['consigneeMobileNumber'].errors.required">Mobile is required.</div>
+                          <div *ngIf="saleOrderForm.controls['consigneeMobileNumber'].errors.pattern || saleOrderForm.controls['consigneeMobileNumber'].errors.maxlength || saleOrderForm.controls['consigneeMobileNumber'].errors.minlength">Phone number must be at least 10 numbers</div>
+                        </div>
+                        <input type="text" class="form-control"  formControlName="consigneeMobileNumber" (keypress)="keyPress($event)">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Consignee Alternate Number<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['consigneeAlternateNumber'].touched && saleOrderForm.controls['consigneeAlternateNumber'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['consigneeAlternateNumber'].errors && saleOrderForm.controls['consigneeAlternateNumber'].errors.required">Mobile is required.</div>
+                          <div *ngIf="saleOrderForm.controls['consigneeAlternateNumber'].errors.pattern || saleOrderForm.controls['consigneeAlternateNumber'].errors.maxlength || saleOrderForm.controls['consigneeAlternateNumber'].errors.minlength">Phone number must be at least 10 numbers</div>
+                        </div>
+                        <input type="text" class="form-control"  formControlName="consigneeAlternateNumber" (keypress)="keyPress($event)">
+                      </div>
+                    </div>
+
+                    <div class="row" style="margin: auto">
+                      <div class="col-lg-4">
+                        <label class="control-label" >Consignee Email</label>
+                        <div *ngIf="saleOrderForm.controls['consigneeEmailId'].errors?.pattern" class="text-danger">Please provide a valid email address</div>
+                        <input type="text" class="form-control"  formControlName="consigneeEmailId">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Consignee Pincode<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['consigneePinCode'].touched && saleOrderForm.controls['consigneePinCode'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['consigneePinCode'].errors && saleOrderForm.controls['consigneePinCode'].errors.required">Pincode is required.</div>
+                          <div *ngIf="saleOrderForm.controls['consigneePinCode'].errors.pattern || saleOrderForm.controls['consigneePinCode'].errors.maxlength || saleOrderForm.controls['consigneePinCode'].errors.minlength">Pincode must be at least 6 numbers</div>
+                        </div>
+                        <input type="text" class="form-control"  formControlName="consigneePinCode" (keypress)="keyPress($event)">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Consignee Address<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['consigneeAddress'].touched && saleOrderForm.controls['consigneeAddress'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['consigneeAddress'].errors && saleOrderForm.controls['consigneeAddress'].errors.required">Consignee Address is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="consigneeAddress">
+                      </div>
+                    </div>
+
+
+
+                    <hr style="height:1px;border:none;color:#333;background-color:#333;" />
+
+                    <div _ngcontent-asr-c147=""  class="p-3 mb-2 bg-dark text-white active"
+                         style="background-color: #2f3e4c; color: #ffffff; height: 40px;"> PRODUCT DETAILS <a _ngcontent-asr-c147=""
+                               target="_blank" class="text-white" ng-reflect-target="_blank"></a></div>
+
+                    <div class="row" style="margin: auto">
+                      <div class="col-lg-4">
+                        <label class="control-label" >AWB Number</label>
+                        <!--<div *ngIf="saleOrderForm.controls['awbNumber'].touched && saleOrderForm.controls['awbNumber'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['awbNumber'].errors && saleOrderForm.controls['awbNumber'].errors.required">AwbNumber  is required.</div></div>-->
+                        <input type="text" class="form-control"  formControlName="referanceNo">
+                      </div>
+
+                      <div class="col-lg-4">
+                        <label class="control-label" >Client Name<span style="color:red">*</span></label>
+                        <select class="form-control" formControlName="clientCode">
+                          <option value="">- Choose Client -</option>
+                          <option *ngFor="let item of clientList; let i = index" [value]="item.clientCode" >
+                            {{item.clientName}}
+                          </option>
+                        </select>
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Client Order ID<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['clientOrderId'].touched && saleOrderForm.controls['clientOrderId'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['clientOrderId'].errors && saleOrderForm.controls['clientOrderId'].errors.required">Client Order Id is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="clientOrderId">
+                      </div>
+                    </div>
+
+                    <div class="row" style="margin: auto">
+                      <div class="col-lg-4">
+                        <label class="control-label" >Product SKU<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['productSKU'].touched && saleOrderForm.controls['productSKU'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['productSKU'].errors && saleOrderForm.controls['productSKU'].errors.required">ProductSKU is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="productSKU">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Product Name<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['productName'].touched && saleOrderForm.controls['productName'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['productName'].errors && saleOrderForm.controls['productName'].errors.required">Product Name is required.</div></div>
+                        <input type="text" class="form-control"  formControlName="productName">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Product Quantity<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['productQuantity'].touched && saleOrderForm.controls['productQuantity'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['productQuantity'].errors && saleOrderForm.controls['productQuantity'].errors.required">Product Quantity is required.</div></div>
+                        <input type="number" class="form-control"  formControlName="productQuantity">
+                      </div>
+                    </div>
+
+                    <div class="row" style="margin: auto">
+                      <div class="col-lg-4">
+                        <label class="control-label" >Product Price<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['productPrice'].touched && saleOrderForm.controls['productPrice'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['productPrice'].errors && saleOrderForm.controls['productPrice'].errors.required">Product Price is required.</div></div>
+                        <input type="number" class="form-control"  formControlName="productPrice">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Length(CM)<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['length'].touched && saleOrderForm.controls['length'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['length'].errors && saleOrderForm.controls['length'].errors.required">Length is required.</div></div>
+                        <input type="number" class="form-control"  formControlName="length">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Breadth(CM)<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['breadth'].touched && saleOrderForm.controls['breadth'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['breadth'].errors && saleOrderForm.controls['breadth'].errors.required">Breadth is required.</div></div>
+                        <input type="number" class="form-control"  formControlName="breadth">
+                      </div>
+                    </div>
+
+                    <div class="row" style="margin: auto">
+                      <div class="col-lg-4">
+                        <label class="control-label" >Height(CM)<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['hight'].touched && saleOrderForm.controls['hight'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['hight'].errors && saleOrderForm.controls['hight'].errors.required">Height is required.</div></div>
+                        <input type="number" class="form-control"  formControlName="hight">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Weight(KG)<span style="color:red">*</span></label>
+                        <div *ngIf="saleOrderForm.controls['weight'].touched && saleOrderForm.controls['weight'].invalid" class="alert-danger">
+                          <div *ngIf="saleOrderForm.controls['weight'].errors && saleOrderForm.controls['weight'].errors.required">Weight is required.</div></div>
+                        <input type="number" class="form-control"  formControlName="weight">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Payment Type<span style="color:red">*</span></label>
+                        <select class="form-control"formControlName="paymentType">
+                          <option value="">- Choose Payment Type -</option>
+                          <option [ngValue]="payment" *ngFor="let payment of paymentTypeList" >{{payment}}</option>
+                        </select>
+                      </div>
+                    </div>
+
+
+                    <div class="row" style="margin: auto">
+                      <div class="col-lg-4">
+                        <label class="control-label" >Order Type</label>
+                        <input type="text" class="form-control"  formControlName="orderType">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Pickup Location ID</label>
+                        <input type="text" class="form-control"  formControlName="pickupLocationId">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Ewaybill</label>
+                        <input type="text" class="form-control"  formControlName="ewaybill">
+                      </div>
+                    </div>
+
+                    <div class="row" style="margin: auto">
+                      <div class="col-lg-4">
+                        <label class="control-label" >Product Image URL</label>
+                        <input type="text" class="form-control"  formControlName="productImageUrl">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Latitude</label>
+                        <input type="number" class="form-control"  formControlName="latitude">
+                      </div>
+                      <div class="col-lg-4">
+                        <label class="control-label" >Longitude</label>
+                        <input type="number" class="form-control"  formControlName="longitude">
+                      </div>
+                    </div>
+
+                    <div class="row" style="margin: auto">
+                      <div class="col-lg-offset-5 col-lg-4"><br>
+                        <div class="row">
+                          <div class="col-lg-6"><button type="submit" class="btn btn-primary" >SUBMIT</button></div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+    </div>
+
+
+
+  </section>
+
+</section>

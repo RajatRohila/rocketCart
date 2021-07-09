@@ -1,0 +1,487 @@
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <!--Loader start hear-->
+      <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="large" color="#fff" type="ball-scale-multiple"
+                   [fullScreen]="true"><p style="color: white"> Loading... </p></ngx-spinner>
+      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="pull-left">API Configuration
+              <!-- <button *ngIf="isDisplay" class="btn btn-default"><a href="#" (click)="addNew()">Add Record</a></button>&nbsp;-->
+              <BUTTON *ngIf="isDisplay" class="btn btn-primary" (click)="addNew()">Add Record</BUTTON>
+              <!-- <button *ngIf="isFirst" class="btn btn-default"> <a href="#" (click)="addNew()">Add  Record</a></button>&nbsp;-->
+              <!-- <button *ngIf="isAdd" class="btn btn-default"> <a href="#" (click)="showRecords()">Show  Records</a></button>-->
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <div class="padd" *ngIf="isAdd">
+              <div class="form quick-post">
+                <form class="form-horizontal" [formGroup]="apiConfigForm" (ngSubmit)="onSubmit()">
+                  <div class="form-group">
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label " for="title">Client ID<span style="color:red">*</span></label>
+                        <div
+                          *ngIf="apiConfigForm.controls['clientId'].touched && apiConfigForm.controls['clientId'].invalid"
+                          class="alert-danger">
+                          <div
+                            *ngIf="apiConfigForm.controls['clientId'].errors && apiConfigForm.controls['clientId'].errors.required">
+                            Client id is required.
+                          </div>
+                        </div>
+                        <select class="form-control" formControlName="clientId">
+                          <option value="">- Choose ClientId -</option>
+                          <option *ngFor="let item of clientList; let i = index" [value]="item.id">
+                            {{item.clientName}}
+                          </option>
+                        </select>
+                      </div>
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label " for="title">Courier ID<span style="color:red">*</span></label>
+                        <div
+                          *ngIf="apiConfigForm.controls['courierId'].touched && apiConfigForm.controls['courierId'].invalid"
+                          class="alert-danger">
+                          <div
+                            *ngIf="apiConfigForm.controls['courierId'].errors && apiConfigForm.controls['courierId'].errors.required">
+                            Courier id is required.
+                          </div>
+                        </div>
+                        <select class="form-control" formControlName="courierId">
+                          <option value="">- Choose Courier Id -</option>
+                          <option *ngFor="let item of courierList; let i = index" [value]="item.id">
+                            {{item.courierName}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+
+
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label " for="title">API Configuration Type<span
+                          style="color:red">*</span></label>
+                        <div
+                          *ngIf="apiConfigForm.controls['apiConfigType'].touched && apiConfigForm.controls['apiConfigType'].invalid"
+                          class="alert-danger">
+                          <div
+                            *ngIf="apiConfigForm.controls['apiConfigType'].errors && apiConfigForm.controls['apiConfigType'].errors.required">
+                            apiConfigType is required.
+                          </div>
+                        </div>
+                        <select class="form-control" formControlName="apiConfigType">
+                          <option value="">- Choose Category -</option>
+                          <option value="STATUS_PUSH">STATUS_PUSH</option>
+                          <option value="STATUS_UPDATE">STATUS_UPDATE</option>
+                          <option value="ORDER_PUSH">ORDER_PUSH</option>
+                        </select>
+                      </div>
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label " for="title">Entity Type<span style="color:red">*</span></label>
+                        <div
+                          *ngIf="apiConfigForm.controls['entityType'].touched && apiConfigForm.controls['entityType'].invalid"
+                          class="alert-danger">
+                          <div
+                            *ngIf="apiConfigForm.controls['entityType'].errors && apiConfigForm.controls['entityType'].errors.required">
+                            entityType is required.
+                          </div>
+                        </div>
+                        <select class="form-control" formControlName="entityType">
+                          <option value="">- Choose Category -</option>
+                          <option value="CLIENT">CLIENT</option>
+                          <option value="COURIER">COURIER</option>
+                        </select>
+                      </div>
+                    </div>
+
+
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label " for="title">Request Method<span style="color:red">*</span></label>
+                        <div
+                          *ngIf="apiConfigForm.controls['requestMethod'].touched && apiConfigForm.controls['requestMethod'].invalid"
+                          class="alert-danger">
+                          <div
+                            *ngIf="apiConfigForm.controls['requestMethod'].errors && apiConfigForm.controls['requestMethod'].errors.required">
+                            requestMethod is required.
+                          </div>
+                        </div>
+                        <select class="form-control" formControlName="requestMethod">
+                          <option value="">- Choose Cateogry -</option>
+                          <option value="GET">GET</option>
+                          <option value="POST">POST</option>
+                        </select>
+                      </div>
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" for="title">Data Params</label>
+                        <input type="text" class="form-control" formControlName="dataParams">
+                      </div>
+                    </div>
+
+
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" for="title">Header Params</label>
+                        <input type="text" class="form-control" formControlName="headerParems">
+                      </div>
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" for="title">Response Bean</label>
+                        <input type="text" class="form-control" formControlName="responseBean">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" for="title">Response Type</label>
+                        <input type="text" class="form-control" formControlName="responseType">
+                      </div>
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" for="title">Request Type</label>
+                        <input type="text" class="form-control" formControlName="requestType">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" for="title">API Token</label>
+                        <input type="text" class="form-control" formControlName="apiToken">
+                      </div>
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" for="title">Extra1</label>
+                        <input type="text" class="form-control" formControlName="extra1">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" for="title">Extra2</label>
+                        <input type="text" class="form-control" formControlName="extra2">
+                      </div>
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" for="title">Extra3</label>
+                        <input type="text" class="form-control" formControlName="extra3">
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" for="title">IMPL Class</label>
+                        <input type="text" class="form-control" formControlName="implClass">
+                      </div>
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" for="title">API URL</label>
+                        <input type="text" class="form-control" formControlName="apiUrl">
+                      </div>
+                    </div>
+
+
+                    <div class="row">
+                      <div class="col-lg-4 col-lg-offset-1">
+                        <label class="control-label" for="title">Service Provider ID</label>
+                        <input type="number" class="form-control" formControlName="serviceProviderId">
+                      </div>
+                      <div class="col-lg-3">
+                        <label class="control-label" for="title">Is Response</label>
+                        <input class="form-check-input" type="checkbox" value="false" formControlName="isResponseArray"
+                               (change)="changeValues()">
+                      </div>
+                    </div>
+
+
+                  </div>
+                  <!-- Content -->
+                  <!-- Buttons -->
+                  <div class="form-group">
+                    <div class="col-lg-offset-2 col-lg-9">
+                      <button type="submit" class="btn btn-primary" [disabled]="!apiConfigForm.valid">Save</button>&nbsp;
+                      <button type="reset" class="btn btn-default">Reset</button>&nbsp;
+                      <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+            </div>
+            <!--Update form start hear-->
+            <div class="padd" *ngIf="isUpdate">
+              <div class="form quick-post">
+                <form class="form-horizontal" [formGroup]="updateApiConfigForm" (ngSubmit)="onUpdateSubmit()">
+                  <div *ngIf="singleRecord.id">
+                    <div class="form-group">
+                      <div class="row">
+                        <input readonly type="hidden"  [(ngModel)]="singleRecord.id" formControlName="id" value={{singleRecord.id}}>
+                      </div><br>
+
+                      <div class="row">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label " for="title">Client Id<span style="color:red">*</span></label>
+                          <div
+                            *ngIf="updateApiConfigForm.controls['clientId'].touched && updateApiConfigForm.controls['clientId'].invalid"
+                            class="alert-danger">
+                            <div
+                              *ngIf="updateApiConfigForm.controls['clientId'].errors && updateApiConfigForm.controls['clientId'].errors.required">
+                              Client id is required.
+                            </div>
+                          </div>
+                          <select class="form-control" formControlName="clientId" [(ngModel)]="singleRecord.clientId"
+                                  value={{singleRecord.clientId}}>
+                            <option value="">- Choose ClientId -</option>
+                            <option *ngFor="let item of clientList; let i = index" [value]="item.id">
+                              {{item.clientName}}
+                            </option>
+                          </select>
+                        </div>
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label " for="title">Courier Id<span style="color:red">*</span></label>
+                          <div
+                            *ngIf="updateApiConfigForm.controls['courierId'].touched && updateApiConfigForm.controls['courierId'].invalid"
+                            class="alert-danger">
+                            <div
+                              *ngIf="updateApiConfigForm.controls['courierId'].errors && updateApiConfigForm.controls['courierId'].errors.required">
+                              Courier id is required.
+                            </div>
+                          </div>
+                          <select class="form-control" formControlName="courierId" [(ngModel)]="singleRecord.courierId"
+                                  value={{singleRecord.courierId}}>
+                            <option value="">- Choose CourierId -</option>
+                            <option *ngFor="let item of courierList; let i = index" [value]="item.id">
+                              {{item.courierName}}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+
+
+                      <div class="row">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label " for="title">Api Config Type<span
+                            style="color:red">*</span></label>
+                          <div
+                            *ngIf="updateApiConfigForm.controls['apiConfigType'].touched && updateApiConfigForm.controls['apiConfigType'].invalid"
+                            class="alert-danger">
+                            <div
+                              *ngIf="updateApiConfigForm.controls['apiConfigType'].errors && updateApiConfigForm.controls['apiConfigType'].errors.required">
+                              apiConfigType is required.
+                            </div>
+                          </div>
+                          <select class="form-control" formControlName="apiConfigType"
+                                  [(ngModel)]="singleRecord.apiConfigType" value={{singleRecord.apiConfigType}}>
+                            <option value="">- Choose Cateogry -</option>
+                            <option value="STATUS_PUSH">STATUS_PUSH</option>
+                            <option value="STATUS_UPDATE">STATUS_UPDATE</option>
+                            <option value="ORDER_PUSH">ORDER_PUSH</option>
+                          </select>
+                        </div>
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label " for="title">Entity Type<span style="color:red">*</span></label>
+                          <div
+                            *ngIf="updateApiConfigForm.controls['entityType'].touched && updateApiConfigForm.controls['entityType'].invalid"
+                            class="alert-danger">
+                            <div
+                              *ngIf="updateApiConfigForm.controls['entityType'].errors && updateApiConfigForm.controls['entityType'].errors.required">
+                              entityType is required.
+                            </div>
+                          </div>
+                          <select class="form-control" formControlName="entityType"
+                                  [(ngModel)]="singleRecord.entityType" value={{singleRecord.entityType}}>
+                            <option value="">- Choose Category -</option>
+                            <option value="CLIENT">CLIENT</option>
+                            <option value="COURIER">COURIER</option>
+                          </select>
+                        </div>
+                      </div>
+
+
+                      <div class="row">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label " for="title">Request Method<span
+                            style="color:red">*</span></label>
+                          <div
+                            *ngIf="updateApiConfigForm.controls['requestMethod'].touched && updateApiConfigForm.controls['requestMethod'].invalid"
+                            class="alert-danger">
+                            <div
+                              *ngIf="updateApiConfigForm.controls['requestMethod'].errors && updateApiConfigForm.controls['requestMethod'].errors.required">
+                              requestMethod is required.
+                            </div>
+                          </div>
+                          <select class="form-control" formControlName="requestMethod"
+                                  [(ngModel)]="singleRecord.requestMethod" value={{singleRecord.requestMethod}}>
+                            <option value="">- Choose Category -</option>
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                          </select>
+                        </div>
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" for="title">Data Params</label>
+                          <input type="text" class="form-control" formControlName="dataParams" [(ngModel)]="singleRecord.dataParams" value={{singleRecord.dataParams}}>
+                        </div>
+                      </div>
+
+
+                      <div class="row">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" for="title">Header Parems</label>
+                          <input type="text" class="form-control" formControlName="headerParems" [(ngModel)]="singleRecord.headerParems" value={{singleRecord.headerParems}}>
+                        </div>
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" for="title">Response Bean</label>
+                          <input type="text" class="form-control" formControlName="responseBean" [(ngModel)]="singleRecord.responseBean" value={{singleRecord.responseBean}}>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" for="title">Response Type</label>
+                          <input type="text" class="form-control" formControlName="responseType" [(ngModel)]="singleRecord.responseType" value={{singleRecord.responseType}}>
+                        </div>
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" for="title">Request Type</label>
+                          <input type="text" class="form-control" formControlName="requestType" [(ngModel)]="singleRecord.requestType" value={{singleRecord.requestType}}>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" for="title">API Token</label>
+                          <input type="text" class="form-control" formControlName="apiToken" [(ngModel)]="singleRecord.apiToken" value={{singleRecord.apiToken}}>
+                        </div>
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" for="title">Extra1</label>
+                          <input type="text" class="form-control" formControlName="extra1" [(ngModel)]="singleRecord.extra1" value={{singleRecord.extra1}}>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" for="title">Extra2</label>
+                          <input type="text" class="form-control" formControlName="extra2" [(ngModel)]="singleRecord.extra2" value={{singleRecord.extra2}}>
+                        </div>
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" for="title">Extra3</label>
+                          <input type="text" class="form-control" formControlName="extra3" [(ngModel)]="singleRecord.extra3" value={{singleRecord.extra3}}>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" for="title">ImplClass</label>
+                          <input type="text" class="form-control" formControlName="implClass" [(ngModel)]="singleRecord.implClass" value={{singleRecord.implClass}}>
+                        </div>
+                        <div class="col-lg-4 col-lg-offset-1">
+                          <label class="control-label" for="title">API URL <span style="color:red">*</span></label>
+                          <input type="text" class="form-control" formControlName="apiUrl"
+                                 [(ngModel)]="singleRecord.apiUrl" value={{singleRecord.apiUrl}}>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-3 col-lg-offset-1">
+                          <label class="control-label" for="title">Service Provider ID</label>
+                          <input type="number" class="form-control" formControlName="serviceProviderId">
+                        </div>
+                        <div class="col-lg-3 col-lg-offset-1">
+                          <label class="control-label">Active<span style="color:red">*</span></label>
+                          <input type="text" class="form-control" formControlName="active"
+                                 [(ngModel)]="singleRecord.active" value={{singleRecord.active}}>
+                        </div>
+                        <div class="col-lg-3 col-lg-offset-1" style="padding: 27px;">
+                          <label class="col-lg-4 col-lg-offset-1" for="title">IsResponse</label>
+                          <input class="form-check-input" type="checkbox" value="false"
+                                 formControlName="isResponseArray"
+                                 (change)="changeValues()" [(ngModel)]="singleRecord.isResponseArray" value={{singleRecord.isResponseArray}}>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-offset-2 col-lg-9">
+                        <button type="submit" class="btn btn-primary">update</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button type="button" (click)="cancelButtonAction()" class="btn btn-close btn-default">Cancel</button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!--Table start hear-->
+
+            <div class="padd table-responsive" [hidden]="!isDisplay">
+              <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                     class=" table table-striped table-condensed table-bordered table-hover display dataTable"
+                     cellspacing="0" style="width:100%;">
+                <thead>
+                <tr class="text-center" style="background-color: #1a2732; color: #ffffff; height: 40px;">
+                  <th>ID</th>
+                  <th>Client Code</th>
+                  <th>Courier Code</th>
+                  <th>Api Config Type</th>
+                  <th>Api Url</th>
+                  <th>Requested Method</th>
+                  <th>Is Response</th>
+                  <th>Active</th>
+                  <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of apiConfigs">
+                  <td>{{ item.id }}</td>
+                  <td>{{ item.clientCode }}</td>
+                  <td>{{ item.courierCode }}</td>
+                  <td>{{ item.apiConfigType }}</td>
+                  <td>{{ item.apiUrl }}</td>
+                  <td>{{ item.requestMethod }}</td>
+                  <td>{{ item.isResponseArray }}</td>
+                  <td>{{ item.active }}</td>
+                  <td>
+                    <a href="javascript:;" (click)="updateRecords(item.id)"><i class="fa fa-pencil" title="Edit"
+                                                                               aria-hidden="true"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;<a href="javascript:;" (click)="deleteRecords(item.id)"><i class="fa fa-trash-o"
+                                                                                     title="Delete"
+                                                                                     aria-hidden="true"></i></a>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+            <!--<div class="widget-foot" *ngIf="isDisplay">
+              <table datatable [dtOptions]="dtOptions"
+                     class=" table table-striped table-condensed table-bordered table-hover display dataTable"
+                     cellspacing="0" style="width:100%;">
+                <thead>
+                <tr class="text-center" style="background-color: #2f3e4c; color: #ffffff; height: 40px;">
+                  <th>ID</th>
+                  <th>Client Id</th>
+                  <th>Courier Id</th>
+                  <th>Api Config Type</th>
+                  <th>Api Url</th>
+                  <th>Requested Method</th>
+                  <th>Is Response</th>
+                  <th>Active</th>
+                  <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of allRecords">
+                  <td>{{ item.id }}</td>
+                  <td>{{ item.clientId }}</td>
+                  <td>{{ item.courierId }}</td>
+                  <td>{{ item.apiConfigType }}</td>
+                  <td>{{ item.apiUrl }}</td>
+                  <td>{{ item.requestMethod }}</td>
+                  <td>{{ item.isResponseArray }}</td>
+                  <td>{{ item.active }}</td>
+                  <td>
+                    <a href="javascript:;" (click)="updateRecords(item.id)"><i class="fa fa-pencil" title="Edit" aria-hidden="true"></i></a>
+                    &nbsp;<a href="javascript:;" (click)="deleteRecords(item.id)"><i class="fa fa-trash-o" title="Delete" aria-hidden="true"></i></a>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</section>

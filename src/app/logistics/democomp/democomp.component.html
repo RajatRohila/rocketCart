@@ -1,0 +1,22 @@
+<section id="main-content">
+  <section class="wrapper">
+    <!--overview start-->
+    <div class="row">
+      <div class="col-md-12 portlets">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+
+              <div class="example-box" *ngFor="let movie of movies" cdkDrag>
+                <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+                {{movie}}
+              </div>
+
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>
